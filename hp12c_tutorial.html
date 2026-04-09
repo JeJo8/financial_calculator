@@ -1,0 +1,1911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HP 12C Platinum – Interactive Tutorial</title>
+  <style>
+    :root {
+      --gold: #c8a84b;
+      --gold-light: #f0d88a;
+      --gold-dark: #9a7a2e;
+      --dark: #1a1a2e;
+      --darker: #0f0f1e;
+      --card: #16213e;
+      --card2: #0f3460;
+      --accent: #e94560;
+      --text: #e0e0e0;
+      --text-dim: #a0a0b0;
+      --green: #4caf50;
+      --blue: #2196f3;
+      --orange: #ff9800;
+      --purple: #9c27b0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--darker);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── TOP HEADER ── */
+    header {
+      background: linear-gradient(135deg, var(--dark) 0%, var(--card2) 100%);
+      border-bottom: 3px solid var(--gold);
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    .calc-icon {
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+      box-shadow: 0 4px 12px rgba(200,168,75,0.4);
+      flex-shrink: 0;
+    }
+
+    header h1 { font-size: 1.6rem; color: var(--gold); font-weight: 700; }
+    header p  { font-size: 0.85rem; color: var(--text-dim); margin-top: 2px; }
+
+    .header-badge {
+      margin-left: auto;
+      background: rgba(200,168,75,0.15);
+      border: 1px solid var(--gold-dark);
+      color: var(--gold-light);
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* ── LAYOUT ── */
+    .container { display: flex; min-height: calc(100vh - 83px); }
+
+    /* ── SIDEBAR ── */
+    nav {
+      width: 240px;
+      flex-shrink: 0;
+      background: var(--dark);
+      border-right: 1px solid rgba(200,168,75,0.2);
+      padding: 20px 0;
+      position: sticky;
+      top: 83px;
+      height: calc(100vh - 83px);
+      overflow-y: auto;
+    }
+
+    nav::-webkit-scrollbar { width: 4px; }
+    nav::-webkit-scrollbar-track { background: transparent; }
+    nav::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 4px; }
+
+    .nav-section-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold-dark);
+      padding: 14px 20px 6px;
+    }
+
+    nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.875rem;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+
+    nav a:hover, nav a.active {
+      color: var(--gold-light);
+      background: rgba(200,168,75,0.08);
+      border-left-color: var(--gold);
+    }
+
+    nav a .nav-icon { font-size: 1rem; width: 20px; text-align: center; flex-shrink: 0; }
+
+    /* ── MAIN CONTENT ── */
+    main {
+      flex: 1;
+      padding: 32px 40px;
+      overflow-y: auto;
+      max-width: 960px;
+    }
+
+    /* ── SECTIONS ── */
+    .section { display: none; animation: fadeIn 0.3s ease; }
+    .section.active { display: block; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 8px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid rgba(200,168,75,0.3);
+    }
+
+    .section-subtitle {
+      color: var(--text-dim);
+      font-size: 0.95rem;
+      margin-bottom: 28px;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      color: var(--gold-light);
+      margin: 28px 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h3::before {
+      content: '';
+      display: inline-block;
+      width: 4px; height: 18px;
+      background: var(--gold);
+      border-radius: 2px;
+    }
+
+    p { color: var(--text-dim); margin-bottom: 12px; font-size: 0.95rem; }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(200,168,75,0.15);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .info-card {
+      background: var(--card);
+      border: 1px solid rgba(200,168,75,0.15);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .info-card .icon { font-size: 1.8rem; margin-bottom: 8px; }
+    .info-card .label { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
+    .info-card .value { font-size: 1.1rem; color: var(--gold-light); font-weight: 600; margin-top: 4px; }
+
+    /* ── KEYSTROKE TABLES ── */
+    .keystroke-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0 20px;
+      font-size: 0.88rem;
+    }
+
+    .keystroke-table th {
+      background: rgba(200,168,75,0.15);
+      color: var(--gold);
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 2px solid rgba(200,168,75,0.3);
+    }
+
+    .keystroke-table td {
+      padding: 9px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      color: var(--text-dim);
+      vertical-align: top;
+    }
+
+    .keystroke-table tr:hover td { background: rgba(200,168,75,0.04); }
+
+    /* ── KEY BUTTON STYLES ── */
+    .key {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(145deg, #3a3a4a, #252535);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 5px;
+      padding: 3px 9px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      color: #fff;
+      white-space: nowrap;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+      vertical-align: middle;
+    }
+
+    .key.gold  { background: linear-gradient(145deg, var(--gold), var(--gold-dark)); color: #1a1a00; border-color: var(--gold-dark); }
+    .key.blue  { background: linear-gradient(145deg, #1565c0, #0d47a1); color: #fff; border-color: #0d47a1; }
+    .key.orange { background: linear-gradient(145deg, #e65100, #bf360c); color: #fff; }
+
+    /* ── DISPLAY BADGE ── */
+    .display {
+      display: inline-block;
+      background: #0a1a0a;
+      border: 1px solid #2a4a2a;
+      border-radius: 4px;
+      padding: 3px 10px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      color: #a0ff60;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── EXAMPLE BLOCKS ── */
+    .example {
+      background: linear-gradient(135deg, rgba(21,101,192,0.12), rgba(15,52,96,0.2));
+      border: 1px solid rgba(33,150,243,0.3);
+      border-left: 4px solid var(--blue);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 16px 0;
+    }
+
+    .example-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--blue);
+      margin-bottom: 8px;
+    }
+
+    .example p { margin-bottom: 6px; }
+
+    .tip {
+      background: rgba(76,175,80,0.1);
+      border: 1px solid rgba(76,175,80,0.3);
+      border-left: 4px solid var(--green);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 14px 0;
+      font-size: 0.875rem;
+      color: #a5d6a7;
+    }
+
+    .tip strong { color: #69f0ae; }
+
+    .warning {
+      background: rgba(233,69,96,0.1);
+      border: 1px solid rgba(233,69,96,0.3);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 14px 0;
+      font-size: 0.875rem;
+      color: #ef9a9a;
+    }
+
+    /* ── CALCULATOR VISUAL ── */
+    .calc-visual {
+      background: linear-gradient(180deg, #2a2a3a 0%, #1a1a28 100%);
+      border: 2px solid rgba(200,168,75,0.4);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 20px 0;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
+
+    .calc-screen {
+      background: #0d1f0d;
+      border: 2px inset #1a3a1a;
+      border-radius: 6px;
+      padding: 10px 16px;
+      font-family: 'Courier New', monospace;
+      font-size: 1.2rem;
+      color: #90ee55;
+      text-align: right;
+      margin-bottom: 16px;
+      letter-spacing: 0.05em;
+      min-height: 42px;
+      box-shadow: inset 0 4px 10px rgba(0,0,0,0.7);
+    }
+
+    .key-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+      justify-content: center;
+    }
+
+    .calc-key {
+      background: linear-gradient(145deg, #3a3a4a, #252535);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 0.75rem;
+      color: #fff;
+      text-align: center;
+      min-width: 48px;
+      cursor: default;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.12);
+      position: relative;
+    }
+
+    .calc-key .top-label {
+      font-size: 0.55rem;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 2px;
+      font-weight: 600;
+    }
+
+    .calc-key .bottom-label {
+      font-size: 0.5rem;
+      color: #6fb3ff;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .calc-key.fin-key { background: linear-gradient(145deg, #1a3a5a, #0d2040); border-color: rgba(33,150,243,0.4); }
+    .calc-key.gold-key { background: linear-gradient(145deg, #4a3a10, #2a2000); border-color: var(--gold-dark); }
+
+    /* ── TABS ── */
+    .tabs { display: flex; gap: 4px; margin-bottom: 20px; flex-wrap: wrap; }
+
+    .tab-btn {
+      padding: 8px 18px;
+      border: 1px solid rgba(200,168,75,0.3);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.15s;
+    }
+
+    .tab-btn:hover, .tab-btn.active {
+      background: rgba(200,168,75,0.15);
+      color: var(--gold-light);
+      border-color: var(--gold);
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ── FORMULA BOX ── */
+    .formula {
+      background: rgba(156,39,176,0.1);
+      border: 1px solid rgba(156,39,176,0.3);
+      border-radius: 8px;
+      padding: 14px 20px;
+      margin: 12px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      color: #ce93d8;
+    }
+
+    .formula strong { color: #e040fb; }
+
+    /* ── QUICK REF TABLE ── */
+    .ref-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    /* ── HAMBURGER BUTTON ── */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 36px; height: 36px;
+      padding: 4px;
+      background: rgba(200,168,75,0.1);
+      border: 1px solid rgba(200,168,75,0.3);
+      border-radius: 8px;
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+    .hamburger span {
+      display: block;
+      width: 100%; height: 2px;
+      background: var(--gold);
+      border-radius: 2px;
+      transition: all 0.25s ease;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ── MOBILE OVERLAY ── */
+    .nav-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 149;
+      backdrop-filter: blur(2px);
+    }
+    .nav-overlay.visible { display: block; }
+
+    @media (max-width: 700px) {
+      .ref-grid { grid-template-columns: 1fr; }
+      main { padding: 20px; }
+      .hamburger { display: flex; }
+      .header-badge { display: none; }
+      header { padding: 14px 16px; }
+      header h1 { font-size: 1.1rem; }
+      header p  { display: none; }
+
+      nav {
+        position: fixed;
+        top: 0; left: 0;
+        height: 100vh;
+        width: 260px;
+        z-index: 150;
+        transform: translateX(-100%);
+        transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+        box-shadow: 4px 0 24px rgba(0,0,0,0.6);
+      }
+      nav.open { transform: translateX(0); }
+    }
+
+    .ref-card {
+      background: var(--card);
+      border: 1px solid rgba(200,168,75,0.15);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .ref-card-header {
+      background: rgba(200,168,75,0.12);
+      padding: 10px 16px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--gold);
+    }
+
+    .ref-card table { width: 100%; border-collapse: collapse; }
+    .ref-card td { padding: 8px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 0.82rem; }
+    .ref-card td:first-child { color: var(--gold-light); font-weight: 600; width: 40%; }
+    .ref-card td:last-child { color: var(--text-dim); }
+
+    /* ── PROGRESS STEPS ── */
+    .steps {
+      counter-reset: step;
+      padding: 0;
+      list-style: none;
+    }
+
+    .steps li {
+      counter-increment: step;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 0.9rem;
+      color: var(--text-dim);
+    }
+
+    .steps li::before {
+      content: counter(step);
+      min-width: 28px; height: 28px;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      color: #1a1000;
+      font-weight: 700;
+      font-size: 0.8rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, rgba(200,168,75,0.12) 0%, rgba(15,52,96,0.3) 100%);
+      border: 1px solid rgba(200,168,75,0.25);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 28px;
+      display: flex;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .hero-text h2 { font-size: 1.4rem; color: var(--gold-light); margin-bottom: 8px; }
+    .hero-text p  { font-size: 0.9rem; color: var(--text-dim); margin-bottom: 0; }
+
+    .hero-stats {
+      display: flex;
+      gap: 20px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .hero-stat {
+      text-align: center;
+    }
+
+    .hero-stat .num { font-size: 1.6rem; font-weight: 700; color: var(--gold); }
+    .hero-stat .lbl { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
+
+    .section-nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .section-nav-btn {
+      padding: 10px 18px;
+      background: var(--card);
+      border: 1px solid rgba(200,168,75,0.2);
+      border-radius: 8px;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-nav-btn:hover {
+      background: rgba(200,168,75,0.12);
+      border-color: var(--gold);
+      color: var(--gold-light);
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(200,168,75,0.15);
+      color: var(--gold);
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(200,168,75,0.3);
+    }
+
+    /* Scrollbar for main */
+    main::-webkit-scrollbar { width: 5px; }
+    main::-webkit-scrollbar-track { background: transparent; }
+    main::-webkit-scrollbar-thumb { background: rgba(200,168,75,0.3); border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="calc-icon">🧮</div>
+  <div>
+    <h1>HP 12C Platinum — Interactive Tutorial</h1>
+    <p>Your complete guide to mastering the world's most trusted financial calculator</p>
+  </div>
+  <div class="header-badge">288-Page Guide Summarized</div>
+  <button class="hamburger" id="hamburgerBtn" aria-label="Open menu" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
+
+<div class="container">
+
+  <!-- SIDEBAR NAV -->
+  <nav id="sidebar">
+    <div class="nav-section-label">Start Here</div>
+    <a href="#" class="active" onclick="showSection('home',this)">
+      <span class="nav-icon">🏠</span> Overview
+    </a>
+    <a href="#" onclick="showSection('keyboard',this)">
+      <span class="nav-icon">⌨️</span> The Keyboard
+    </a>
+    <a href="#" onclick="showSection('rpn',this)">
+      <span class="nav-icon">🔢</span> RPN vs ALG Mode
+    </a>
+
+    <div class="nav-section-label">Core Functions</div>
+    <a href="#" onclick="showSection('tvm',this)">
+      <span class="nav-icon">⏱️</span> Time Value of Money
+    </a>
+    <a href="#" onclick="showSection('interest',this)">
+      <span class="nav-icon">💹</span> Interest Calculations
+    </a>
+    <a href="#" onclick="showSection('mortgage',this)">
+      <span class="nav-icon">🏠</span> Mortgages & Loans
+    </a>
+    <a href="#" onclick="showSection('cashflow',this)">
+      <span class="nav-icon">💰</span> Cash Flow Analysis
+    </a>
+    <a href="#" onclick="showSection('depreciation',this)">
+      <span class="nav-icon">📉</span> Depreciation
+    </a>
+    <a href="#" onclick="showSection('statistics',this)">
+      <span class="nav-icon">📊</span> Statistics
+    </a>
+
+    <div class="nav-section-label">Programming</div>
+    <a href="#" onclick="showSection('prog_intro',this)">
+      <span class="nav-icon">💾</span> Why Programs?
+    </a>
+    <a href="#" onclick="showSection('prog_create',this)">
+      <span class="nav-icon">✏️</span> Creating & Running
+    </a>
+    <a href="#" onclick="showSection('prog_branch',this)">
+      <span class="nav-icon">🔁</span> Branching & Looping
+    </a>
+    <a href="#" onclick="showSection('prog_edit',this)">
+      <span class="nav-icon">🛠️</span> Editing Programs
+    </a>
+
+    <div class="nav-section-label">Reference</div>
+    <a href="#" onclick="showSection('quickref',this)">
+      <span class="nav-icon">📋</span> Quick Reference
+    </a>
+    <a href="#" onclick="showSection('tips',this)">
+      <span class="nav-icon">💡</span> Tips & Tricks
+    </a>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main>
+
+    <!-- ══════════════ HOME ══════════════ -->
+    <div class="section active" id="home">
+      <div class="hero">
+        <div style="font-size:5rem;flex-shrink:0;">🧮</div>
+        <div class="hero-text">
+          <h2>Welcome to the HP 12C Platinum Tutorial</h2>
+          <p>The HP 12C Platinum is the world's best-selling financial calculator — trusted by financial professionals, bankers, real estate agents, and students for decades. This interactive guide covers all the key functions to get you productive fast.</p>
+          <div class="hero-stats">
+            <div class="hero-stat"><div class="num">5</div><div class="lbl">TVM Keys</div></div>
+            <div class="hero-stat"><div class="num">n, i, PV<br>PMT, FV</div><div class="lbl">Financial Registers</div></div>
+            <div class="hero-stat"><div class="num">RPN</div><div class="lbl">Primary Mode</div></div>
+            <div class="hero-stat"><div class="num">400+</div><div class="lbl">Program Steps</div></div>
+          </div>
+        </div>
+      </div>
+
+      <h3>What You'll Learn</h3>
+      <div class="card-grid">
+        <div class="info-card" style="cursor:pointer" onclick="showSection('tvm',document.querySelector('[onclick*=tvm]'))">
+          <div class="icon">⏱️</div>
+          <div class="value">TVM</div>
+          <div class="label">Time Value of Money</div>
+        </div>
+        <div class="info-card" style="cursor:pointer" onclick="showSection('interest',document.querySelector('[onclick*=interest]'))">
+          <div class="icon">💹</div>
+          <div class="value">Interest</div>
+          <div class="label">Simple & Compound</div>
+        </div>
+        <div class="info-card" style="cursor:pointer" onclick="showSection('mortgage',document.querySelector('[onclick*=mortgage]'))">
+          <div class="icon">🏠</div>
+          <div class="value">Mortgages</div>
+          <div class="label">Loans & Amortization</div>
+        </div>
+        <div class="info-card" style="cursor:pointer" onclick="showSection('cashflow',document.querySelector('[onclick*=cashflow]'))">
+          <div class="icon">💰</div>
+          <div class="value">NPV / IRR</div>
+          <div class="label">Cash Flow Analysis</div>
+        </div>
+        <div class="info-card" style="cursor:pointer" onclick="showSection('depreciation',document.querySelector('[onclick*=depreciation]'))">
+          <div class="icon">📉</div>
+          <div class="value">Depreciation</div>
+          <div class="label">SL, DB, SOYD</div>
+        </div>
+        <div class="info-card" style="cursor:pointer" onclick="showSection('statistics',document.querySelector('[onclick*=statistics]'))">
+          <div class="icon">📊</div>
+          <div class="value">Statistics</div>
+          <div class="label">Mean, Std Dev, Regression</div>
+        </div>
+      </div>
+
+      <h3>Before You Start</h3>
+      <div class="card">
+        <p>The HP 12C uses <strong>RPN (Reverse Polish Notation)</strong> by default — a powerful input method where you enter numbers <em>before</em> the operator. The Platinum model also supports standard Algebraic (ALG) mode if you prefer.</p>
+        <div class="tip"><strong>💡 Tip:</strong> Press <span class="key">ON</span> to power on. The calculator auto-shuts off after 12 minutes of inactivity.</div>
+        <p>Before every new calculation, clear the financial registers with: <span class="key gold">f</span> <span class="key">CLEAR</span> <span class="key">FIN</span></p>
+      </div>
+
+      <h3>Navigate This Tutorial</h3>
+      <div class="section-nav">
+        <button class="section-nav-btn" onclick="showSection('keyboard',document.querySelector('[onclick*=keyboard]'))">⌨️ The Keyboard</button>
+        <button class="section-nav-btn" onclick="showSection('rpn',document.querySelector('[onclick*=rpn]'))">🔢 RPN Mode</button>
+        <button class="section-nav-btn" onclick="showSection('tvm',document.querySelector('[onclick*=tvm]'))">⏱️ TVM →</button>
+        <button class="section-nav-btn" onclick="showSection('quickref',document.querySelector('[onclick*=quickref]'))">📋 Quick Reference</button>
+      </div>
+    </div>
+
+    <!-- ══════════════ KEYBOARD ══════════════ -->
+    <div class="section" id="keyboard">
+      <div class="section-title">⌨️ The Keyboard</div>
+      <p class="section-subtitle">Understanding the HP 12C's keyboard layout is the foundation of everything.</p>
+
+      <h3>Prefix Keys</h3>
+      <p>The HP 12C uses three prefix keys to access its full function set. Each key activates a different color-coded function layer.</p>
+
+      <div class="card-grid" style="grid-template-columns: repeat(3,1fr)">
+        <div class="card" style="text-align:center;border-color:rgba(200,168,75,0.4)">
+          <span class="key gold" style="font-size:1.1rem;padding:6px 16px">f</span>
+          <div style="margin-top:10px;font-size:0.8rem;color:var(--gold)">GOLD prefix</div>
+          <div style="font-size:0.75rem;color:var(--text-dim);margin-top:4px">Activates the gold-labeled functions printed <em>above</em> each key</div>
+        </div>
+        <div class="card" style="text-align:center;border-color:rgba(33,150,243,0.4)">
+          <span class="key blue" style="font-size:1.1rem;padding:6px 16px">g</span>
+          <div style="margin-top:10px;font-size:0.8rem;color:#64b5f6">BLUE prefix</div>
+          <div style="font-size:0.75rem;color:var(--text-dim);margin-top:4px">Activates the blue-labeled functions printed <em>below</em> each key</div>
+        </div>
+        <div class="card" style="text-align:center;border-color:rgba(255,255,255,0.2)">
+          <span class="key" style="font-size:1.1rem;padding:6px 16px">No prefix</span>
+          <div style="margin-top:10px;font-size:0.8rem;color:var(--text)">PRIMARY</div>
+          <div style="font-size:0.75rem;color:var(--text-dim);margin-top:4px">Executes the main function shown on the key face itself</div>
+        </div>
+      </div>
+
+      <h3>The Five Financial Keys (Top Row)</h3>
+      <p>The most important keys — the top row stores and computes the five Time Value of Money variables.</p>
+
+      <div class="calc-visual">
+        <div class="key-row">
+          <div class="calc-key fin-key" style="min-width:70px">
+            <span class="top-label">AMORT</span>
+            <span>n</span>
+            <span class="bottom-label">12×</span>
+          </div>
+          <div class="calc-key fin-key" style="min-width:70px">
+            <span class="top-label">INT</span>
+            <span>i</span>
+            <span class="bottom-label">12÷</span>
+          </div>
+          <div class="calc-key fin-key" style="min-width:70px">
+            <span class="top-label">NPV</span>
+            <span>PV</span>
+            <span class="bottom-label">CFo</span>
+          </div>
+          <div class="calc-key fin-key" style="min-width:70px">
+            <span class="top-label">PMT</span>
+            <span>PMT</span>
+            <span class="bottom-label">CFj</span>
+          </div>
+          <div class="calc-key fin-key" style="min-width:70px">
+            <span class="top-label">IRR</span>
+            <span>FV</span>
+            <span class="bottom-label">Nj</span>
+          </div>
+        </div>
+        <div style="text-align:center;font-size:0.75rem;color:var(--text-dim);margin-top:8px">
+          The TVM register keys — blue labels show cash-flow functions
+        </div>
+      </div>
+
+      <table class="keystroke-table">
+        <tr>
+          <th>Key</th>
+          <th>Name</th>
+          <th>Stores / Calculates</th>
+          <th>Gold (f)</th>
+          <th>Blue (g)</th>
+        </tr>
+        <tr>
+          <td><span class="key">n</span></td>
+          <td>Periods</td>
+          <td>Number of compounding periods</td>
+          <td>AMORT — amortize</td>
+          <td>12× — multiply by 12</td>
+        </tr>
+        <tr>
+          <td><span class="key">i</span></td>
+          <td>Interest</td>
+          <td>Interest rate per period</td>
+          <td>INT — simple interest</td>
+          <td>12÷ — divide by 12</td>
+        </tr>
+        <tr>
+          <td><span class="key">PV</span></td>
+          <td>Present Value</td>
+          <td>Present value of cash flows</td>
+          <td>NPV — net present value</td>
+          <td>CFo — initial cash flow</td>
+        </tr>
+        <tr>
+          <td><span class="key">PMT</span></td>
+          <td>Payment</td>
+          <td>Periodic payment amount</td>
+          <td>— </td>
+          <td>CFj — periodic cash flow</td>
+        </tr>
+        <tr>
+          <td><span class="key">FV</span></td>
+          <td>Future Value</td>
+          <td>Future value of cash flows</td>
+          <td>IRR — internal rate of return</td>
+          <td>Nj — number of times CFj repeats</td>
+        </tr>
+      </table>
+
+      <h3>Other Key Operations</h3>
+      <table class="keystroke-table">
+        <tr><th>Keystroke</th><th>Function</th></tr>
+        <tr><td><span class="key">ENTER</span></td><td>In RPN mode: separates two numbers before an operation</td></tr>
+        <tr><td><span class="key">CHS</span></td><td>Change sign — converts positive to negative and vice versa</td></tr>
+        <tr><td><span class="key gold">f</span> <span class="key">CLEAR</span> <span class="key">FIN</span></td><td>Clear all five financial registers (n, i, PV, PMT, FV)</td></tr>
+        <tr><td><span class="key gold">f</span> <span class="key">CLEAR</span> <span class="key">REG</span></td><td>Clear all data storage registers and financial registers</td></tr>
+        <tr><td><span class="key">RCL</span> + key</td><td>Recall a stored value without recalculating</td></tr>
+        <tr><td><span class="key">STO</span> + digit</td><td>Store current display value in a numbered register (0–9)</td></tr>
+        <tr><td><span class="key blue">g</span> <span class="key">BEG</span></td><td>Set payment mode to Beginning of period (annuity due)</td></tr>
+        <tr><td><span class="key blue">g</span> <span class="key">END</span></td><td>Set payment mode to End of period (ordinary annuity)</td></tr>
+      </table>
+    </div>
+
+    <!-- ══════════════ RPN ══════════════ -->
+    <div class="section" id="rpn">
+      <div class="section-title">🔢 RPN vs ALG Mode</div>
+      <p class="section-subtitle">Understanding how to enter numbers and operations is essential for efficient calculation.</p>
+
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(this,'rpn-tab')">RPN Mode (Default)</button>
+        <button class="tab-btn" onclick="switchTab(this,'alg-tab')">ALG Mode</button>
+        <button class="tab-btn" onclick="switchTab(this,'compare-tab')">Side-by-Side</button>
+      </div>
+
+      <div class="tab-content active" id="rpn-tab">
+        <h3>Reverse Polish Notation (RPN)</h3>
+        <p>In RPN mode, you enter the operands <em>first</em>, then press the operator. The calculator uses a <strong>4-level stack</strong> (X, Y, Z, T) to hold intermediate values.</p>
+
+        <div class="tip"><strong>💡 Rule:</strong> To compute A + B, press: <span class="key">A</span> <span class="key">ENTER</span> <span class="key">B</span> <span class="key">+</span></div>
+
+        <h3>RPN Stack Concept</h3>
+        <div class="card">
+          <p>The stack automatically lifts when you start a new number. Think of it as a stack of plates:</p>
+          <ol class="steps">
+            <li>Type a number — it goes into the <strong>X register</strong> (bottom)</li>
+            <li>Press <span class="key">ENTER</span> — X lifts to Y, number stays in X</li>
+            <li>Type second number — goes into X</li>
+            <li>Press operator (+, −, ×, ÷) — result appears in X</li>
+          </ol>
+        </div>
+
+        <div class="example">
+          <div class="example-title">📝 Example: Calculate (3 + 4) × 2 in RPN</div>
+          <table class="keystroke-table">
+            <tr><th>Keystroke</th><th>Display</th><th>What Happened</th></tr>
+            <tr><td><span class="key">3</span> <span class="key">ENTER</span></td><td><span class="display">3.00</span></td><td>3 entered and lifted to Y register</td></tr>
+            <tr><td><span class="key">4</span> <span class="key">+</span></td><td><span class="display">7.00</span></td><td>4 added to 3, result in X</td></tr>
+            <tr><td><span class="key">2</span> <span class="key">×</span></td><td><span class="display">14.00</span></td><td>7 multiplied by 2</td></tr>
+          </table>
+        </div>
+
+        <div class="example">
+          <div class="example-title">📝 Example: Calculate 450 × 7% simple interest</div>
+          <table class="keystroke-table">
+            <tr><th>Keystroke</th><th>Display</th><th>What Happened</th></tr>
+            <tr><td><span class="key">450</span> <span class="key">ENTER</span></td><td><span class="display">450.00</span></td><td>Principal entered</td></tr>
+            <tr><td><span class="key">7</span> <span class="key">%</span></td><td><span class="display">31.50</span></td><td>7% of 450 = 31.50</td></tr>
+            <tr><td><span class="key">+</span></td><td><span class="display">481.50</span></td><td>450 + 31.50 = 481.50</td></tr>
+          </table>
+        </div>
+
+        <div class="tip"><strong>To switch TO RPN mode:</strong> Press <span class="key gold">f</span> <span class="key">MODE</span> until no "ALG" indicator shows in display.</div>
+      </div>
+
+      <div class="tab-content" id="alg-tab">
+        <h3>Algebraic (ALG) Mode</h3>
+        <p>ALG mode works like a regular calculator — enter the first number, press the operator, then enter the second number and press <span class="key">=</span>.</p>
+
+        <div class="tip"><strong>To switch TO ALG mode:</strong> Press <span class="key gold">f</span> <span class="key">MODE</span> until "ALG" shows in display.</div>
+
+        <div class="example">
+          <div class="example-title">📝 Example: Calculate (3 + 4) × 2 in ALG</div>
+          <table class="keystroke-table">
+            <tr><th>Keystroke</th><th>Display</th><th>What Happened</th></tr>
+            <tr><td><span class="key">3</span> <span class="key">+</span></td><td><span class="display">3.00</span></td><td>First number and operator entered</td></tr>
+            <tr><td><span class="key">4</span> <span class="key">=</span></td><td><span class="display">7.00</span></td><td>Sum computed</td></tr>
+            <tr><td><span class="key">×</span> <span class="key">2</span> <span class="key">=</span></td><td><span class="display">14.00</span></td><td>Result multiplied by 2</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-content" id="compare-tab">
+        <h3>RPN vs ALG: Same Calculation</h3>
+        <p>Problem: Calculate monthly interest rate from 6% annual rate</p>
+        <div class="card-grid" style="grid-template-columns:1fr 1fr">
+          <div class="card">
+            <div style="color:var(--gold);font-weight:700;margin-bottom:10px">RPN Mode</div>
+            <table class="keystroke-table">
+              <tr><th>Keys</th><th>Display</th></tr>
+              <tr><td><span class="key">6</span> <span class="key">ENTER</span></td><td><span class="display">6.00</span></td></tr>
+              <tr><td><span class="key">12</span> <span class="key">÷</span></td><td><span class="display">0.50</span></td></tr>
+            </table>
+          </div>
+          <div class="card">
+            <div style="color:#64b5f6;font-weight:700;margin-bottom:10px">ALG Mode</div>
+            <table class="keystroke-table">
+              <tr><th>Keys</th><th>Display</th></tr>
+              <tr><td><span class="key">6</span> <span class="key">÷</span> <span class="key">12</span></td><td><span class="display">6.00</span></td></tr>
+              <tr><td><span class="key">=</span></td><td><span class="display">0.50</span></td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="tip">The HP 12C's TVM and financial functions work the same regardless of RPN or ALG mode.</div>
+      </div>
+    </div>
+
+    <!-- ══════════════ TVM ══════════════ -->
+    <div class="section" id="tvm">
+      <div class="section-title">⏱️ Time Value of Money (TVM)</div>
+      <p class="section-subtitle">The most powerful feature of the HP 12C — solving for any TVM variable when you know the other four.</p>
+
+      <h3>The Five TVM Variables</h3>
+      <div class="formula">
+        TVM relates: <strong>n</strong> (periods) · <strong>i</strong> (rate) · <strong>PV</strong> (present value) · <strong>PMT</strong> (payment) · <strong>FV</strong> (future value)
+      </div>
+
+      <div class="card-grid" style="grid-template-columns: repeat(5,1fr)">
+        <div class="info-card"><div class="icon">📅</div><div class="value">n</div><div class="label">Periods</div></div>
+        <div class="info-card"><div class="icon">📈</div><div class="value">i</div><div class="label">Rate/Period</div></div>
+        <div class="info-card"><div class="icon">💵</div><div class="value">PV</div><div class="label">Present Value</div></div>
+        <div class="info-card"><div class="icon">💳</div><div class="value">PMT</div><div class="label">Payment</div></div>
+        <div class="info-card"><div class="icon">🏦</div><div class="value">FV</div><div class="label">Future Value</div></div>
+      </div>
+
+      <div class="warning">⚠️ <strong>Cash Flow Sign Convention:</strong> Money <em>paid out</em> (outflows) is <strong>negative</strong>. Money <em>received</em> (inflows) is <strong>positive</strong>. Use <span class="key">CHS</span> to change sign.</div>
+
+      <h3>General TVM Procedure</h3>
+      <ol class="steps">
+        <li>Press <span class="key gold">f</span> <span class="key">CLEAR FIN</span> — clears all financial registers</li>
+        <li>Enter the known values: type the number, then press the register key (<span class="key">n</span>, <span class="key">i</span>, <span class="key">PV</span>, <span class="key">PMT</span>, or <span class="key">FV</span>)</li>
+        <li>If rate is annual and periods are monthly, divide rate by 12: <span class="key">6</span> <span class="key blue">g</span> <span class="key">12÷</span></li>
+        <li>If periods are years×months: <span class="key">5</span> <span class="key blue">g</span> <span class="key">12×</span> for 5 years monthly</li>
+        <li>Press the <strong>unknown</strong> register key to calculate it</li>
+      </ol>
+
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(this,'tvm-ex1')">College Savings</button>
+        <button class="tab-btn" onclick="switchTab(this,'tvm-ex2')">Future Value</button>
+        <button class="tab-btn" onclick="switchTab(this,'tvm-ex3')">Required Payment</button>
+        <button class="tab-btn" onclick="switchTab(this,'tvm-ex4')">Find Interest Rate</button>
+      </div>
+
+      <div class="tab-content active" id="tvm-ex1">
+        <div class="example">
+          <div class="example-title">📝 Example 1: How much to deposit for college savings?</div>
+          <p><strong>Problem:</strong> You need $500/month for 4 years (48 months) starting in college. Account pays 6% annual interest, compounded monthly. She withdraws at the <em>beginning</em> of each month. How much to deposit now?</p>
+          <p><strong>Known:</strong> n=48, i=0.5%/month, PMT=500, FV=0, Mode=BEGIN</p>
+          <table class="keystroke-table">
+            <tr><th>Keystroke</th><th>Display</th><th>Action</th></tr>
+            <tr><td><span class="key gold">f</span> <span class="key">CLEAR FIN</span> <span class="key gold">f</span> <span class="key">2</span></td><td><span class="display">0.00</span></td><td>Clear registers, set 2 decimal places</td></tr>
+            <tr><td><span class="key">4</span> <span class="key blue">g</span> <span class="key">12×</span></td><td><span class="display">48.00</span></td><td>4 years × 12 = 48 periods</td></tr>
+            <tr><td><span class="key">6</span> <span class="key blue">g</span> <span class="key">12÷</span></td><td><span class="display">0.50</span></td><td>6% ÷ 12 = 0.5% per month</td></tr>
+            <tr><td><span class="key">500</span> <span class="key">PMT</span></td><td><span class="display">500.00</span></td><td>Monthly payment stored</td></tr>
+            <tr><td><span class="key blue">g</span> <span class="key">BEG</span></td><td><span class="display">500.00</span></td><td>Payments at beginning of period</td></tr>
+            <tr><td><span class="key">PV</span></td><td><span class="display">-21,396.61</span></td><td>💡 You must deposit $21,396.61 today</td></tr>
+          </table>
+          <div class="tip"><strong>Why negative?</strong> The PV is money you pay <em>out</em> — an outflow — so it shows negative. The actual deposit is $21,396.61.</div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="tvm-ex2">
+        <div class="example">
+          <div class="example-title">📝 Example 2: Future Value of an Insurance Policy</div>
+          <p><strong>Problem:</strong> A $5,000 paid-up insurance policy pays 5.35% compounded annually. What is it worth in 14 years?</p>
+          <table class="keystroke-table">
+            <tr><th>Keystroke</th><th>Display</th><th>Action</th></tr>
+            <tr><td><span class="key gold">f</span> <span class="key">CLEAR FIN</span></td><td><span class="display">0.00</span></td><td>Clear registers</td></tr>
+            <tr><td><span class="key">14</span> <span class="key">n</span></td><td><span class="display">14.00</span></td><td>14 compounding periods</td></tr>
+            <tr><td><span class="key">5.35</span> <span class="key">i</span></td><td><span class="display">5.35</span></td><td>Annual interest rate</td></tr>
+            <tr><td><span class="key">5000</span> <span class="key">CHS</span> <span class="key">PV</span></td><td><span class="display">-5,000.00</span></td><td>Present value (outflow = negative)</td></tr>
+            <tr><td><span class="key">FV</span></td><td><span class="display">10,371.79</span></td><td>💡 Policy will be worth $10,371.79 in 14 years</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-content" id="tvm-ex3">
+        <div class="example">
+          <div class="example-title">📝 Example 3: Required Monthly Payment</div>
+          <p><strong>Problem:</strong> You need to accumulate $11,024.82 in 14 years with monthly deposits at 6% annual rate. What's the monthly payment?</p>
+          <table class="keystroke-table">
+            <tr><th>Keystroke</th><th>Display</th><th>Action</th></tr>
+            <tr><td><span class="key gold">f</span> <span class="key">CLEAR FIN</span></td><td><span class="display">0.00</span></td><td>Clear registers</td></tr>
+            <tr><td><span class="key">14</span> <span class="key blue">g</span> <span class="key">12×</span></td><td><span class="display">168.00</span></td><td>14 × 12 = 168 monthly periods</td></tr>
+            <tr><td><span class="key">6</span> <span class="key blue">g</span> <span class="key">12÷</span></td><td><span class="display">0.50</span></td><td>0.5% monthly rate</td></tr>
+            <tr><td><span class="key">11024.82</span> <span class="key">FV</span></td><td><span class="display">11,024.82</span></td><td>Required future value</td></tr>
+            <tr><td><span class="key blue">g</span> <span class="key">END</span></td><td><span class="display">11,024.82</span></td><td>Payments at end of period</td></tr>
+            <tr><td><span class="key">PMT</span></td><td><span class="display">-42.03</span></td><td>💡 Monthly payment of $42.03</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-content" id="tvm-ex4">
+        <div class="example">
+          <div class="example-title">📝 Example 4: Solving for Interest Rate</div>
+          <p><strong>Problem:</strong> You can afford $45/month for 168 months to accumulate $11,024.82. What is the minimum annual interest rate needed?</p>
+          <table class="keystroke-table">
+            <tr><th>Keystroke</th><th>Display</th><th>Action</th></tr>
+            <tr><td><span class="key">45</span> <span class="key">CHS</span> <span class="key">PMT</span></td><td><span class="display">-45.00</span></td><td>Monthly payment (outflow)</td></tr>
+            <tr><td><span class="key">i</span></td><td><span class="display">0.43</span></td><td>Monthly interest rate = 0.43%</td></tr>
+            <tr><td><span class="key">RCL</span> <span class="key blue">g</span> <span class="key">12÷</span></td><td><span class="display">5.13</span></td><td>💡 Annual rate = 5.13%</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ INTEREST ══════════════ -->
+    <div class="section" id="interest">
+      <div class="section-title">💹 Interest Calculations</div>
+      <p class="section-subtitle">Simple interest, compound interest, and percentage calculations.</p>
+
+      <h3>Simple Interest</h3>
+      <p>The HP 12C calculates simple interest on both a 360-day and 365-day basis simultaneously.</p>
+
+      <div class="formula">
+        <strong>Simple Interest</strong> = Principal × Annual Rate × (Days / Day-Basis)
+      </div>
+
+      <ol class="steps">
+        <li>Key in number of days, press <span class="key">n</span></li>
+        <li>Key in annual interest rate (%), press <span class="key">i</span></li>
+        <li>Key in principal amount, press <span class="key">CHS</span> <span class="key">PV</span></li>
+        <li>Press <span class="key gold">f</span> <span class="key">INT</span> → shows interest on 360-day basis</li>
+        <li>For 365-day basis: press <span class="key">RCL</span> <span class="key">×</span> (or use <strong>d</strong> key to toggle)</li>
+        <li>To get total (principal + interest): press <span class="key">+</span></li>
+      </ol>
+
+      <div class="example">
+        <div class="example-title">📝 Example: $450 loan for 60 days at 7% simple interest</div>
+        <table class="keystroke-table">
+          <tr><th>Keystroke</th><th>Display</th><th>Action</th></tr>
+          <tr><td><span class="key">60</span> <span class="key">n</span></td><td><span class="display">60.00</span></td><td>Number of days</td></tr>
+          <tr><td><span class="key">7</span> <span class="key">i</span></td><td><span class="display">7.00</span></td><td>Annual interest rate</td></tr>
+          <tr><td><span class="key">450</span> <span class="key">CHS</span> <span class="key">PV</span></td><td><span class="display">-450.00</span></td><td>Principal amount</td></tr>
+          <tr><td><span class="key gold">f</span> <span class="key">INT</span></td><td><span class="display">5.25</span></td><td>Interest on 360-day basis</td></tr>
+          <tr><td><span class="key">+</span></td><td><span class="display">455.25</span></td><td>💡 Total = $455.25</td></tr>
+        </table>
+      </div>
+
+      <h3>Percentage Calculations</h3>
+      <table class="keystroke-table">
+        <tr><th>Operation</th><th>Keystrokes (RPN)</th><th>Example</th></tr>
+        <tr>
+          <td>X% of Y</td>
+          <td><span class="key">Y</span> <span class="key">ENTER</span> <span class="key">X</span> <span class="key">%</span></td>
+          <td>7% of 200 → <span class="display">14.00</span></td>
+        </tr>
+        <tr>
+          <td>% change from X to Y</td>
+          <td><span class="key">X</span> <span class="key">ENTER</span> <span class="key">Y</span> <span class="key">△%</span></td>
+          <td>100 to 125 → <span class="display">25.00</span>%</td>
+        </tr>
+        <tr>
+          <td>% of total</td>
+          <td><span class="key">Total</span> <span class="key">ENTER</span> <span class="key">Part</span> <span class="key">%T</span></td>
+          <td>350 of 875 → <span class="display">40.00</span>%</td>
+        </tr>
+      </table>
+
+      <h3>Nominal ↔ Effective Interest Rate</h3>
+      <div class="card">
+        <p>Convert between nominal (stated) and effective (actual) annual rates.</p>
+        <table class="keystroke-table">
+          <tr><th>Operation</th><th>Keystrokes</th></tr>
+          <tr>
+            <td>Nominal → Effective</td>
+            <td>Enter nominal rate <span class="key">ENTER</span>, compounding periods per year, press <span class="key gold">f</span> <span class="key">EFF</span></td>
+          </tr>
+          <tr>
+            <td>Effective → Nominal</td>
+            <td>Enter effective rate <span class="key">ENTER</span>, compounding periods, press <span class="key gold">f</span> <span class="key">APR</span></td>
+          </tr>
+        </table>
+        <div class="example">
+          <div class="example-title">📝 12% nominal, compounded monthly → effective rate</div>
+          <table class="keystroke-table">
+            <tr><th>Keystroke</th><th>Display</th></tr>
+            <tr><td><span class="key">12</span> <span class="key">ENTER</span> <span class="key">12</span> <span class="key gold">f</span> <span class="key">EFF</span></td><td><span class="display">12.68</span></td></tr>
+          </table>
+          <p>A 12% nominal rate compounded monthly equals a 12.68% effective annual rate.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ MORTGAGE ══════════════ -->
+    <div class="section" id="mortgage">
+      <div class="section-title">🏠 Mortgages & Loans</div>
+      <p class="section-subtitle">Calculate monthly payments, remaining balances, and amortization schedules.</p>
+
+      <h3>Monthly Mortgage Payment</h3>
+      <ol class="steps">
+        <li>Press <span class="key gold">f</span> <span class="key">CLEAR FIN</span></li>
+        <li>Enter loan term in months → <span class="key">n</span></li>
+        <li>Enter annual rate ÷ 12 → <span class="key">i</span></li>
+        <li>Enter loan amount → <span class="key">PV</span></li>
+        <li>Enter 0 → <span class="key">FV</span> (loan fully paid off)</li>
+        <li>Press <span class="key">PMT</span> to calculate monthly payment</li>
+      </ol>
+
+      <div class="example">
+        <div class="example-title">📝 Example: 30-year mortgage of $100,000 at 8.5% annual rate</div>
+        <table class="keystroke-table">
+          <tr><th>Keystroke</th><th>Display</th><th>Action</th></tr>
+          <tr><td><span class="key gold">f</span> <span class="key">CLEAR FIN</span></td><td><span class="display">0.00</span></td><td>Clear all financial registers</td></tr>
+          <tr><td><span class="key">30</span> <span class="key blue">g</span> <span class="key">12×</span></td><td><span class="display">360.00</span></td><td>30 years = 360 months</td></tr>
+          <tr><td><span class="key">8.5</span> <span class="key blue">g</span> <span class="key">12÷</span></td><td><span class="display">0.71</span></td><td>Monthly rate = 8.5%÷12</td></tr>
+          <tr><td><span class="key">100000</span> <span class="key">PV</span></td><td><span class="display">100,000.00</span></td><td>Loan amount</td></tr>
+          <tr><td><span class="key">0</span> <span class="key">FV</span></td><td><span class="display">0.00</span></td><td>Zero balance at end</td></tr>
+          <tr><td><span class="key">PMT</span></td><td><span class="display">-768.91</span></td><td>💡 Monthly payment = $768.91</td></tr>
+        </table>
+      </div>
+
+      <h3>Amortization (Remaining Balance & Interest Paid)</h3>
+      <p>After computing PMT, use <span class="key gold">f</span> <span class="key">AMORT</span> to see how much of each payment goes to principal and interest.</p>
+
+      <div class="card">
+        <table class="keystroke-table">
+          <tr><th>Keystroke</th><th>Action</th></tr>
+          <tr><td><span class="key">1</span> <span class="key gold">f</span> <span class="key">AMORT</span></td><td>Amortize 1 payment — shows interest paid</td></tr>
+          <tr><td><span class="key">RCL</span> <span class="key">PV</span></td><td>Recall remaining principal balance</td></tr>
+          <tr><td><span class="key">x↔y</span></td><td>Toggle to see principal portion of payment</td></tr>
+          <tr><td><span class="key">12</span> <span class="key gold">f</span> <span class="key">AMORT</span></td><td>Amortize next 12 payments at once (annual summary)</td></tr>
+        </table>
+
+        <div class="example">
+          <div class="example-title">📝 Amortize First Year of the $100,000 Mortgage</div>
+          <table class="keystroke-table">
+            <tr><th>Keystroke</th><th>Display</th><th>Meaning</th></tr>
+            <tr><td><span class="key">12</span> <span class="key gold">f</span> <span class="key">AMORT</span></td><td><span class="display">-8,484.08</span></td><td>Interest paid in first year</td></tr>
+            <tr><td><span class="key">x↔y</span></td><td><span class="display">-743.84</span></td><td>Principal paid in first year</td></tr>
+            <tr><td><span class="key">RCL</span> <span class="key">PV</span></td><td><span class="display">99,256.16</span></td><td>Remaining balance after year 1</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <h3>Balloon Payment Loans</h3>
+      <div class="card">
+        <p>Some loans require a large "balloon" payment at the end. Enter the balloon amount as FV.</p>
+        <div class="example">
+          <div class="example-title">📝 3-year loan at 10.5% with $4,000 balloon, $14,000 borrowed</div>
+          <table class="keystroke-table">
+            <tr><th>Keystroke</th><th>Display</th><th>Action</th></tr>
+            <tr><td><span class="key">3</span> <span class="key blue">g</span> <span class="key">12×</span></td><td><span class="display">36.00</span></td><td>36 monthly periods</td></tr>
+            <tr><td><span class="key">10.5</span> <span class="key blue">g</span> <span class="key">12÷</span></td><td><span class="display">0.88</span></td><td>Monthly rate</td></tr>
+            <tr><td><span class="key">14000</span> <span class="key">PV</span></td><td><span class="display">14,000.00</span></td><td>Loan amount</td></tr>
+            <tr><td><span class="key">4000</span> <span class="key">CHS</span> <span class="key">FV</span></td><td><span class="display">-4,000.00</span></td><td>Balloon payment</td></tr>
+            <tr><td><span class="key">PMT</span></td><td><span class="display">-395.65</span></td><td>💡 Monthly payment = $395.65</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ CASH FLOW ══════════════ -->
+    <div class="section" id="cashflow">
+      <div class="section-title">💰 Cash Flow Analysis</div>
+      <p class="section-subtitle">Calculate Net Present Value (NPV) and Internal Rate of Return (IRR) for uneven cash flows.</p>
+
+      <h3>Entering Cash Flows</h3>
+      <p>For NPV/IRR analysis, enter an initial investment and a series of cash flows that may be unequal.</p>
+
+      <div class="card">
+        <table class="keystroke-table">
+          <tr><th>Keystroke</th><th>Action</th></tr>
+          <tr><td><span class="key gold">f</span> <span class="key">CLEAR REG</span></td><td>Clear all data registers first</td></tr>
+          <tr><td>Amount <span class="key blue">g</span> <span class="key">CFo</span></td><td>Enter initial cash flow (CF₀) — usually negative (investment)</td></tr>
+          <tr><td>Amount <span class="key blue">g</span> <span class="key">CFj</span></td><td>Enter subsequent cash flow (CFj)</td></tr>
+          <tr><td>Count <span class="key blue">g</span> <span class="key">Nj</span></td><td>If the same cash flow repeats, enter how many times</td></tr>
+          <tr><td>Rate <span class="key">i</span></td><td>Enter discount rate (interest rate per period)</td></tr>
+          <tr><td><span class="key gold">f</span> <span class="key">NPV</span></td><td>Calculate Net Present Value</td></tr>
+          <tr><td><span class="key gold">f</span> <span class="key">IRR</span></td><td>Calculate Internal Rate of Return</td></tr>
+        </table>
+      </div>
+
+      <div class="example">
+        <div class="example-title">📝 Example: Investment of $10,000. Cash flows over 4 years: $2,000, $4,000, $4,000, $2,000. Is it profitable at 12% discount rate?</div>
+        <table class="keystroke-table">
+          <tr><th>Keystroke</th><th>Display</th><th>Action</th></tr>
+          <tr><td><span class="key gold">f</span> <span class="key">CLEAR REG</span></td><td><span class="display">0.00</span></td><td>Clear registers</td></tr>
+          <tr><td><span class="key">10000</span> <span class="key">CHS</span> <span class="key blue">g</span> <span class="key">CFo</span></td><td><span class="display">-10,000.00</span></td><td>Initial investment (outflow)</td></tr>
+          <tr><td><span class="key">2000</span> <span class="key blue">g</span> <span class="key">CFj</span></td><td><span class="display">2,000.00</span></td><td>Year 1 cash flow</td></tr>
+          <tr><td><span class="key">4000</span> <span class="key blue">g</span> <span class="key">CFj</span></td><td><span class="display">4,000.00</span></td><td>Year 2 cash flow</td></tr>
+          <tr><td><span class="key">2</span> <span class="key blue">g</span> <span class="key">Nj</span></td><td><span class="display">2.00</span></td><td>Year 3 = same as Year 2 (repeats 2×)</td></tr>
+          <tr><td><span class="key">2000</span> <span class="key blue">g</span> <span class="key">CFj</span></td><td><span class="display">2,000.00</span></td><td>Year 4 cash flow</td></tr>
+          <tr><td><span class="key">12</span> <span class="key">i</span></td><td><span class="display">12.00</span></td><td>12% discount rate</td></tr>
+          <tr><td><span class="key gold">f</span> <span class="key">NPV</span></td><td><span class="display">-627.61</span></td><td>💡 NPV = -$627.61 → not profitable at 12%</td></tr>
+          <tr><td><span class="key gold">f</span> <span class="key">IRR</span></td><td><span class="display">10.28</span></td><td>💡 IRR = 10.28% (below 12% threshold)</td></tr>
+        </table>
+        <div class="tip"><strong>Interpretation:</strong> A negative NPV means the investment doesn't meet the 12% hurdle rate. The IRR of 10.28% confirms the return is below the 12% required.</div>
+      </div>
+
+      <h3>NPV vs IRR Interpretation</h3>
+      <div class="ref-grid">
+        <div class="ref-card">
+          <div class="ref-card-header">NPV Decision Rule</div>
+          <table>
+            <tr><td>NPV &gt; 0</td><td>✅ Accept — adds value</td></tr>
+            <tr><td>NPV = 0</td><td>⚖️ Indifferent</td></tr>
+            <tr><td>NPV &lt; 0</td><td>❌ Reject — destroys value</td></tr>
+          </table>
+        </div>
+        <div class="ref-card">
+          <div class="ref-card-header">IRR Decision Rule</div>
+          <table>
+            <tr><td>IRR &gt; hurdle rate</td><td>✅ Accept investment</td></tr>
+            <tr><td>IRR = hurdle rate</td><td>⚖️ Indifferent</td></tr>
+            <tr><td>IRR &lt; hurdle rate</td><td>❌ Reject investment</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ DEPRECIATION ══════════════ -->
+    <div class="section" id="depreciation">
+      <div class="section-title">📉 Depreciation</div>
+      <p class="section-subtitle">Calculate depreciation using three different methods — Straight-Line, Declining Balance, and Sum-of-Years' Digits.</p>
+
+      <h3>Setup for All Depreciation Methods</h3>
+      <ol class="steps">
+        <li>Enter original cost → <span class="key">PV</span></li>
+        <li>Enter salvage value → <span class="key">FV</span></li>
+        <li>Enter useful life in years → <span class="key">n</span></li>
+        <li>Enter the year number for which to calculate → <span class="key">i</span> (for SL/SOYD) or as multiplier (for DB)</li>
+      </ol>
+
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(this,'dep-sl')">Straight-Line (SL)</button>
+        <button class="tab-btn" onclick="switchTab(this,'dep-db')">Declining Balance (DB)</button>
+        <button class="tab-btn" onclick="switchTab(this,'dep-soyd')">Sum-of-Years' Digits</button>
+      </div>
+
+      <div class="tab-content active" id="dep-sl">
+        <h3>Straight-Line Depreciation</h3>
+        <div class="formula">
+          Annual Depreciation = (<strong>Cost − Salvage</strong>) ÷ <strong>Useful Life</strong>
+        </div>
+        <p>Keystroke: <span class="key">j</span> (Year number) <span class="key">i</span> then <span class="key gold">f</span> <span class="key">SL</span></p>
+        <div class="example">
+          <div class="example-title">📝 Cost $10,000, Salvage $1,000, Life 5 years</div>
+          <table class="keystroke-table">
+            <tr><th>Keystroke</th><th>Display</th><th>Action</th></tr>
+            <tr><td><span class="key">10000</span> <span class="key">PV</span></td><td><span class="display">10,000.00</span></td><td>Original cost</td></tr>
+            <tr><td><span class="key">1000</span> <span class="key">FV</span></td><td><span class="display">1,000.00</span></td><td>Salvage value</td></tr>
+            <tr><td><span class="key">5</span> <span class="key">n</span></td><td><span class="display">5.00</span></td><td>Useful life (years)</td></tr>
+            <tr><td><span class="key">1</span> <span class="key">i</span></td><td><span class="display">1.00</span></td><td>Year 1 (any year gives same result for SL)</td></tr>
+            <tr><td><span class="key gold">f</span> <span class="key">SL</span></td><td><span class="display">1,800.00</span></td><td>💡 Annual depreciation = $1,800/year</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-content" id="dep-db">
+        <h3>Declining Balance Depreciation</h3>
+        <div class="formula">
+          Year Depreciation = Book Value × (Factor ÷ Useful Life)
+        </div>
+        <p>Use <span class="key gold">f</span> <span class="key">DB</span> for declining balance. Enter the declining balance factor as a percentage before the year.</p>
+        <div class="example">
+          <div class="example-title">📝 200% DB: Cost $10,000, Salvage $1,000, Life 5 years, Year 1</div>
+          <table class="keystroke-table">
+            <tr><th>Keystroke</th><th>Display</th><th>Action</th></tr>
+            <tr><td><span class="key">10000</span> <span class="key">PV</span>, <span class="key">1000</span> <span class="key">FV</span>, <span class="key">5</span> <span class="key">n</span></td><td><span class="display">5.00</span></td><td>Set up asset values</td></tr>
+            <tr><td><span class="key">1</span> <span class="key">i</span></td><td><span class="display">1.00</span></td><td>Year 1</td></tr>
+            <tr><td><span class="key">200</span> <span class="key gold">f</span> <span class="key">DB</span></td><td><span class="display">4,000.00</span></td><td>Year 1 depreciation (200% DB)</td></tr>
+            <tr><td><span class="key">x↔y</span></td><td><span class="display">6,000.00</span></td><td>Remaining book value after Year 1</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-content" id="dep-soyd">
+        <h3>Sum-of-Years' Digits (SOYD)</h3>
+        <div class="formula">
+          SOYD = Cost × (Remaining Life) ÷ Sum-of-Digits
+        </div>
+        <p>Keystroke: <span class="key">j</span> (Year number) <span class="key">i</span> then <span class="key gold">f</span> <span class="key">SOYD</span></p>
+        <div class="example">
+          <div class="example-title">📝 Cost $10,000, Salvage $1,000, Life 5 years — Year 2 depreciation</div>
+          <table class="keystroke-table">
+            <tr><th>Keystroke</th><th>Display</th><th>Action</th></tr>
+            <tr><td><span class="key">10000</span> <span class="key">PV</span>, <span class="key">1000</span> <span class="key">FV</span>, <span class="key">5</span> <span class="key">n</span></td><td><span class="display">5.00</span></td><td>Set up asset values</td></tr>
+            <tr><td><span class="key">2</span> <span class="key">i</span></td><td><span class="display">2.00</span></td><td>Year 2</td></tr>
+            <tr><td><span class="key gold">f</span> <span class="key">SOYD</span></td><td><span class="display">2,400.00</span></td><td>💡 Year 2 depreciation = $2,400</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ STATISTICS ══════════════ -->
+    <div class="section" id="statistics">
+      <div class="section-title">📊 Statistics Functions</div>
+      <p class="section-subtitle">Accumulate data and calculate mean, standard deviation, and linear regression.</p>
+
+      <h3>Entering Statistical Data</h3>
+      <ol class="steps">
+        <li>Press <span class="key gold">f</span> <span class="key">CLEAR REG</span> to clear all registers</li>
+        <li>For 1-variable data: type each number, press <span class="key">Σ+</span></li>
+        <li>For 2-variable (x,y): type y <span class="key">ENTER</span> type x, press <span class="key">Σ+</span></li>
+        <li>The display shows the count (n) after each entry</li>
+        <li>To remove a data point: re-enter it and press <span class="key blue">g</span> <span class="key">Σ−</span></li>
+      </ol>
+
+      <h3>Statistical Calculations</h3>
+      <table class="keystroke-table">
+        <tr><th>Function</th><th>Keystroke</th><th>Description</th></tr>
+        <tr><td>Mean of x</td><td><span class="key blue">g</span> <span class="key">x̄</span></td><td>Average of all x values</td></tr>
+        <tr><td>Mean of y</td><td><span class="key blue">g</span> <span class="key">x̄</span> then <span class="key">x↔y</span></td><td>Average of all y values</td></tr>
+        <tr><td>Std Dev (sample)</td><td><span class="key blue">g</span> <span class="key">s</span></td><td>Sample standard deviation of x</td></tr>
+        <tr><td>Linear regression</td><td><span class="key blue">g</span> <span class="key">L.R.</span></td><td>Shows slope (m); x↔y for intercept (b)</td></tr>
+        <tr><td>Estimate y given x</td><td>Enter x, press <span class="key blue">g</span> <span class="key">ŷ,r</span></td><td>Predicted y value and correlation r</td></tr>
+      </table>
+
+      <div class="example">
+        <div class="example-title">📝 Example: Mean and Std Dev of {4, 8, 11, 14, 18}</div>
+        <table class="keystroke-table">
+          <tr><th>Keystroke</th><th>Display</th><th>Action</th></tr>
+          <tr><td><span class="key gold">f</span> <span class="key">CLEAR REG</span></td><td><span class="display">0.00</span></td><td>Clear registers</td></tr>
+          <tr><td><span class="key">4</span> <span class="key">Σ+</span></td><td><span class="display">1.00</span></td><td>1st data point entered</td></tr>
+          <tr><td><span class="key">8</span> <span class="key">Σ+</span></td><td><span class="display">2.00</span></td><td>2nd data point</td></tr>
+          <tr><td><span class="key">11</span> <span class="key">Σ+</span></td><td><span class="display">3.00</span></td><td>3rd data point</td></tr>
+          <tr><td><span class="key">14</span> <span class="key">Σ+</span></td><td><span class="display">4.00</span></td><td>4th data point</td></tr>
+          <tr><td><span class="key">18</span> <span class="key">Σ+</span></td><td><span class="display">5.00</span></td><td>5th data point</td></tr>
+          <tr><td><span class="key blue">g</span> <span class="key">x̄</span></td><td><span class="display">11.00</span></td><td>💡 Mean = 11</td></tr>
+          <tr><td><span class="key blue">g</span> <span class="key">s</span></td><td><span class="display">5.39</span></td><td>💡 Sample std deviation ≈ 5.39</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══════════════ PROG INTRO ══════════════ -->
+    <div class="section" id="prog_intro">
+      <div class="section-title">💾 Why Use Programs?</div>
+      <p class="section-subtitle">Programs let you store a sequence of keystrokes and replay them instantly — press one key instead of many.</p>
+
+      <div class="hero" style="padding:24px">
+        <div style="font-size:3.5rem;flex-shrink:0">💡</div>
+        <div>
+          <h2 style="font-size:1.2rem;color:var(--gold-light);margin-bottom:6px">What is a Program?</h2>
+          <p style="margin:0">A program is simply a <strong>sequence of keystrokes stored inside the calculator</strong>. Instead of pressing all the keys each time, you press just one key — <span class="key">R/S</span> — to start the program. The calculator does the rest automatically, using whatever data you enter beforehand.</p>
+        </div>
+      </div>
+
+      <h3>Two Operating Modes</h3>
+      <div class="card-grid" style="grid-template-columns:1fr 1fr">
+        <div class="card" style="border-color:rgba(200,168,75,0.4)">
+          <div style="color:var(--gold);font-weight:700;font-size:1rem;margin-bottom:8px">▶ RUN Mode <span class="badge">Default</span></div>
+          <p>Keys are <strong>executed immediately</strong> when pressed. This is normal calculator operation.</p>
+          <div style="margin-top:10px"><span class="key gold">f</span> <span class="key">RUN</span> → switches to Run mode<br><small style="color:var(--text-dim)">PRGM indicator turns OFF</small></div>
+        </div>
+        <div class="card" style="border-color:rgba(233,69,96,0.4)">
+          <div style="color:#ef9a9a;font-weight:700;font-size:1rem;margin-bottom:8px">📝 PRGM Mode</div>
+          <p>Keys are <strong>stored as instructions</strong> — not executed. Use this to write programs.</p>
+          <div style="margin-top:10px"><span class="key gold">f</span> <span class="key">P/R</span> → switches to Program mode<br><small style="color:var(--text-dim)">PRGM indicator turns ON</small></div>
+        </div>
+      </div>
+
+      <h3>Program Memory</h3>
+      <div class="card">
+        <p>The HP 12C Platinum stores up to <strong>400 program lines</strong>. Each line holds one instruction (one keystroke). Program memory and data storage registers share memory — the more program lines used, the fewer data registers are available, and vice versa.</p>
+        <table class="keystroke-table">
+          <tr><th>Default State</th><th>Value</th></tr>
+          <tr><td>Program lines available</td><td>8 (auto-expands as needed)</td></tr>
+          <tr><td>Data registers available</td><td>20 (R₀ through R₉, R.0–R.9)</td></tr>
+          <tr><td>Maximum program lines</td><td>400</td></tr>
+        </table>
+        <div class="tip"><strong>Check memory status:</strong> Press <span class="key blue">g</span> <span class="key">MEM</span> — display shows available program lines and registers.</div>
+      </div>
+
+      <h3>The Program Workflow</h3>
+      <ol class="steps">
+        <li><strong>Plan it first</strong> — write down the exact keystrokes on paper before entering them</li>
+        <li><strong>Enter Program mode</strong> — press <span class="key gold">f</span> <span class="key">P/R</span> (PRGM indicator lights up)</li>
+        <li><strong>Clear old programs</strong> — press <span class="key gold">f</span> <span class="key">CLEAR PRGM</span> (shows <span class="display">000,</span>)</li>
+        <li><strong>Enter keystrokes</strong> — each key press stores one instruction; display shows line number and code</li>
+        <li><strong>Return to Run mode</strong> — press <span class="key gold">f</span> <span class="key">P/R</span> again</li>
+        <li><strong>Key in data</strong> — enter the input values your program needs</li>
+        <li><strong>Run it</strong> — press <span class="key">R/S</span> and the program executes automatically</li>
+      </ol>
+
+      <div class="section-nav" style="margin-top:24px">
+        <button class="section-nav-btn" onclick="showSection('prog_create',document.querySelector('[onclick*=prog_create]'))">✏️ Creating & Running Programs →</button>
+      </div>
+    </div>
+
+    <!-- ══════════════ PROG CREATE ══════════════ -->
+    <div class="section" id="prog_create">
+      <div class="section-title">✏️ Creating & Running Programs</div>
+      <p class="section-subtitle">Step-by-step guide to writing, storing, and executing your first program.</p>
+
+      <h3>Key Controls at a Glance</h3>
+      <table class="keystroke-table">
+        <tr><th>Keystroke</th><th>Action</th><th>Notes</th></tr>
+        <tr><td><span class="key gold">f</span> <span class="key">P/R</span></td><td>Toggle Program / Run mode</td><td>PRGM indicator shows when in Program mode</td></tr>
+        <tr><td><span class="key gold">f</span> <span class="key">CLEAR PRGM</span></td><td>Erase all program lines</td><td>Resets to <span class="display">000,</span> — do this before a new program</td></tr>
+        <tr><td><span class="key">R/S</span></td><td>Run the program (or stop it)</td><td>Execution starts from program line 000</td></tr>
+        <tr><td><span class="key">SST</span> (→)</td><td>Single-step forward</td><td>In Run mode: executes one line; in PRGM: advances display</td></tr>
+        <tr><td><span class="key">BST</span> (←)</td><td>Back-step</td><td>Moves back one program line without executing</td></tr>
+        <tr><td><span class="key blue">g</span> <span class="key">GTO</span> <span class="key">000</span></td><td>Go to program line 000</td><td>Resets execution pointer to start</td></tr>
+        <tr><td><span class="key blue">g</span> <span class="key">PAUSE</span></td><td>Pause 1 second during execution</td><td>Shows intermediate result briefly, then continues</td></tr>
+        <tr><td><span class="key">STO</span> <span class="key">n</span></td><td>Store display in register n</td><td>Used inside programs to save intermediate values</td></tr>
+        <tr><td><span class="key">RCL</span> <span class="key">n</span></td><td>Recall register n to display</td><td>Retrieves saved values during program execution</td></tr>
+      </table>
+
+      <h3>Example Program: Discount + Handling Fee</h3>
+      <div class="example">
+        <div class="example-title">📝 Problem: Calculate net cost after 25% discount plus $5 handling</div>
+        <p><strong>Formula:</strong> Net Cost = Price × (1 − 0.25) + 5</p>
+
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab(this,'pc-rpn')">RPN Mode</button>
+          <button class="tab-btn" onclick="switchTab(this,'pc-alg')">ALG Mode</button>
+        </div>
+
+        <div class="tab-content active" id="pc-rpn">
+          <p style="margin-top:12px;color:var(--text-dim);font-size:0.85rem">First test manually (price = $200 in RPN):</p>
+          <table class="keystroke-table">
+            <tr><th>Keystroke</th><th>Display</th><th>Action</th></tr>
+            <tr><td><span class="key">200</span> <span class="key">ENTER</span></td><td><span class="display">200.00</span></td><td>Enter price</td></tr>
+            <tr><td><span class="key">25</span> <span class="key">%</span></td><td><span class="display">50.00</span></td><td>25% discount amount</td></tr>
+            <tr><td><span class="key">−</span></td><td><span class="display">150.00</span></td><td>Price minus discount</td></tr>
+            <tr><td><span class="key">5</span> <span class="key">+</span></td><td><span class="display">155.00</span></td><td>Add handling fee</td></tr>
+          </table>
+          <p style="margin-top:12px;color:var(--text-dim);font-size:0.85rem">Now store the program (skip the price entry — it changes each time):</p>
+          <table class="keystroke-table">
+            <tr><th>Keystroke</th><th>Display</th><th>Stored Instruction</th></tr>
+            <tr><td><span class="key gold">f</span> <span class="key">P/R</span></td><td>—</td><td>Enter Program mode (PRGM lights up)</td></tr>
+            <tr><td><span class="key gold">f</span> <span class="key">CLEAR PRGM</span></td><td><span class="display">000,</span></td><td>Clear old programs</td></tr>
+            <tr><td><span class="key">ENTER</span></td><td><span class="display">001, 36</span></td><td>Line 001: ENTER</td></tr>
+            <tr><td><span class="key">2</span> <span class="key">5</span></td><td><span class="display">003, 5</span></td><td>Lines 002–003: digits 2, 5</td></tr>
+            <tr><td><span class="key">%</span></td><td><span class="display">004, 25</span></td><td>Line 004: % (percent)</td></tr>
+            <tr><td><span class="key">−</span></td><td><span class="display">005, 30</span></td><td>Line 005: minus</td></tr>
+            <tr><td><span class="key">5</span></td><td><span class="display">006, 5</span></td><td>Line 006: digit 5 (handling fee)</td></tr>
+            <tr><td><span class="key">+</span></td><td><span class="display">007, 40</span></td><td>Line 007: plus</td></tr>
+            <tr><td><span class="key gold">f</span> <span class="key">P/R</span></td><td><span class="display">155.00</span></td><td>Return to Run mode</td></tr>
+          </table>
+          <p style="margin-top:12px;color:var(--text-dim);font-size:0.85rem">Run the program for different prices:</p>
+          <table class="keystroke-table">
+            <tr><th>Keystroke</th><th>Display</th><th>Result</th></tr>
+            <tr><td><span class="key">625</span> <span class="key">R/S</span></td><td><span class="display">473.75</span></td><td>Net cost of $625 typewriter</td></tr>
+            <tr><td><span class="key">159</span> <span class="key">R/S</span></td><td><span class="display">124.25</span></td><td>Net cost of $159 chair</td></tr>
+          </table>
+        </div>
+
+        <div class="tab-content" id="pc-alg">
+          <p style="margin-top:12px;color:var(--text-dim);font-size:0.85rem">Store the program in ALG mode (skip the price entry):</p>
+          <table class="keystroke-table">
+            <tr><th>Keystroke</th><th>Display</th><th>Stored Instruction</th></tr>
+            <tr><td><span class="key gold">f</span> <span class="key">P/R</span></td><td>—</td><td>Enter Program mode</td></tr>
+            <tr><td><span class="key gold">f</span> <span class="key">CLEAR PRGM</span></td><td><span class="display">000,</span></td><td>Clear old programs</td></tr>
+            <tr><td><span class="key">−</span></td><td><span class="display">001, 30</span></td><td>Line 001: minus operator</td></tr>
+            <tr><td><span class="key">2</span> <span class="key">5</span></td><td><span class="display">003, 5</span></td><td>Lines 002–003: digits 2, 5</td></tr>
+            <tr><td><span class="key">%</span></td><td><span class="display">004, 25</span></td><td>Line 004: percent</td></tr>
+            <tr><td><span class="key">+</span></td><td><span class="display">005, 40</span></td><td>Line 005: plus</td></tr>
+            <tr><td><span class="key">5</span></td><td><span class="display">006, 5</span></td><td>Line 006: digit 5</td></tr>
+            <tr><td><span class="key">=</span></td><td><span class="display">007, 36</span></td><td>Line 007: equals</td></tr>
+            <tr><td><span class="key gold">f</span> <span class="key">P/R</span></td><td>—</td><td>Return to Run mode</td></tr>
+          </table>
+          <p style="margin-top:8px;font-size:0.85rem;color:var(--text-dim)">In ALG mode: enter price first, then press <span class="key">R/S</span>.</p>
+        </div>
+      </div>
+
+      <h3>Stepping Through a Program (Debugging)</h3>
+      <p>Instead of pressing <span class="key">R/S</span> to run the entire program, use <span class="key">SST</span> to execute one line at a time. This lets you see each intermediate result and find errors.</p>
+      <div class="card">
+        <table class="keystroke-table">
+          <tr><th>Action</th><th>Keystroke</th><th>Display Shows</th></tr>
+          <tr><td>Set to Run mode at line 000</td><td><span class="key gold">f</span> <span class="key">P/R</span></td><td>Current result</td></tr>
+          <tr><td>Execute line 001</td><td><span class="key">SST</span> (hold, then release)</td><td>Line number + keycode → then result</td></tr>
+          <tr><td>Execute line 002</td><td><span class="key">SST</span> again</td><td>Next result</td></tr>
+          <tr><td>Go back one line (no execute)</td><td><span class="key blue">g</span> <span class="key">BST</span></td><td>Previous line number</td></tr>
+        </table>
+        <div class="tip"><strong>💡 How to read the display during SST:</strong> When you press SST, it first shows the <em>line number and keycode</em> (e.g., <span class="display">003, 25</span>). Release the key — the instruction executes and the display shows the <em>result</em>.</div>
+      </div>
+
+      <h3>Pausing During Execution</h3>
+      <p>Add a <span class="key blue">g</span> <span class="key">PSE</span> (Pause) instruction inside a program to briefly display an intermediate result (~1 second) before continuing. Useful for showing multiple outputs from one program run.</p>
+      <div class="tip"><strong>To stop during a pause:</strong> Press any key while the result is showing. Press <span class="key">R/S</span> to resume execution from that point.</div>
+    </div>
+
+    <!-- ══════════════ PROG BRANCH ══════════════ -->
+    <div class="section" id="prog_branch">
+      <div class="section-title">🔁 Branching & Looping</div>
+      <p class="section-subtitle">Transfer execution to different program lines and repeat sections automatically.</p>
+
+      <h3>Simple Branching — GTO (Go To)</h3>
+      <p>The <strong>GTO</strong> instruction tells the calculator to jump to a specific program line instead of continuing to the next line.</p>
+
+      <div class="card">
+        <table class="keystroke-table">
+          <tr><th>Keystroke</th><th>When Used In a Program</th></tr>
+          <tr><td><span class="key blue">g</span> <span class="key">GTO</span> <span class="key">0</span><span class="key">0</span><span class="key">5</span></td><td>Jumps execution to program line 005</td></tr>
+          <tr><td><span class="key blue">g</span> <span class="key">GTO</span> <span class="key">0</span><span class="key">0</span><span class="key">0</span></td><td>Returns to line 000 (halts program — auto-stored at end)</td></tr>
+        </table>
+        <div class="tip"><strong>Direction matters:</strong> GTO can branch <em>backward</em> (creates loops) or <em>forward</em> (skips sections). Backward branching without a stop condition creates an infinite loop!</div>
+      </div>
+
+      <h3>Looping</h3>
+      <p>A loop is created by branching backward — placing a GTO instruction that points to an earlier line. The program will keep repeating that section until you stop it or a conditional branch exits the loop.</p>
+
+      <div class="example">
+        <div class="example-title">📝 Example: Auto-Amortizing Mortgage Program</div>
+        <p>This program automatically amortizes payments on a mortgage, looping to show interest and principal for each period without re-pressing keys each time.</p>
+        <p><strong>Setup first (before programming):</strong> $150,000 mortgage, 4.75% annual rate, 30 years, End mode.</p>
+
+        <p style="margin-top:12px"><strong>Program Lines:</strong></p>
+        <table class="keystroke-table">
+          <tr><th>Line</th><th>Keystroke</th><th>Purpose</th></tr>
+          <tr><td>001</td><td><span class="key">STO</span> <span class="key">0</span></td><td>Store the number of payments to amortize in R₀</td></tr>
+          <tr><td>002</td><td><span class="key">RCL</span> <span class="key">0</span></td><td>↩ Loop start: recall payment count to display</td></tr>
+          <tr><td>003</td><td><span class="key gold">f</span> <span class="key">AMORT</span></td><td>Amortize — shows interest paid</td></tr>
+          <tr><td>004</td><td><span class="key blue">g</span> <span class="key">PSE</span></td><td>Pause 1 second to display interest</td></tr>
+          <tr><td>005</td><td><span class="key">x↔y</span></td><td>Swap to show principal paid</td></tr>
+          <tr><td>006</td><td><span class="key blue">g</span> <span class="key">PSE</span></td><td>Pause 1 second to display principal</td></tr>
+          <tr><td>007</td><td><span class="key blue">g</span> <span class="key">GTO</span> <span class="key">002</span></td><td>↩ Go back to line 002 (loop!)</td></tr>
+        </table>
+
+        <p style="margin-top:12px"><strong>Running the program:</strong></p>
+        <table class="keystroke-table">
+          <tr><th>Keystroke</th><th>Display</th><th>Meaning</th></tr>
+          <tr><td>Setup: 30 <span class="key blue">g</span> 12×, 4.75 <span class="key blue">g</span> 12÷, 150000 PV, <span class="key blue">g</span> END, PMT</td><td><span class="display">-782.47</span></td><td>Monthly payment calculated</td></tr>
+          <tr><td><span class="key">0</span> <span class="key">n</span></td><td><span class="display">0.00</span></td><td>Reset n register</td></tr>
+          <tr><td><span class="key">1</span> <span class="key">R/S</span></td><td><span class="display">-593.75</span></td><td>Month 1 interest (pauses 1 sec)</td></tr>
+          <tr><td>— (auto continues)</td><td><span class="display">-188.72</span></td><td>Month 1 principal (pauses 1 sec)</td></tr>
+          <tr><td>— (loops)</td><td><span class="display">-593.00</span></td><td>Month 2 interest…</td></tr>
+          <tr><td>Press any key</td><td>—</td><td>Stops the loop</td></tr>
+        </table>
+        <div class="tip"><strong>Amortizing 12 at once:</strong> Key in <span class="key">12</span> instead of <span class="key">1</span> before pressing R/S to see annual totals.</div>
+      </div>
+
+      <h3>Conditional Branching</h3>
+      <p>Conditional branches let the program make decisions — going to one line if a condition is true, and simply continuing to the next line if false.</p>
+
+      <div class="card">
+        <table class="keystroke-table">
+          <tr><th>Instruction</th><th>Keystroke</th><th>Branches If…</th></tr>
+          <tr><td>x = y?</td><td><span class="key blue">g</span> <span class="key">x=y</span></td><td>X register equals Y register</td></tr>
+          <tr><td>x ≤ y?</td><td><span class="key blue">g</span> <span class="key">x≤y</span></td><td>X register is less than or equal to Y register</td></tr>
+          <tr><td>x = 0?</td><td><span class="key blue">g</span> <span class="key">x=0</span></td><td>X register equals zero</td></tr>
+          <tr><td>x &lt; 0?</td><td><span class="key blue">g</span> <span class="key">x&lt;0</span></td><td>X register is negative</td></tr>
+        </table>
+        <p>In each case, if the condition is <strong>true</strong>: executes the GTO instruction on the next program line (branches). If <strong>false</strong>: skips the GTO and continues to the line after.</p>
+        <div class="example">
+          <div class="example-title">📝 Conditional Pattern — "If x &lt; 0, stop"</div>
+          <table class="keystroke-table">
+            <tr><th>Line</th><th>Instruction</th><th>Purpose</th></tr>
+            <tr><td>…</td><td>(calculation)</td><td>Some computed value in X</td></tr>
+            <tr><td>n</td><td><span class="key blue">g</span> <span class="key">x&lt;0</span></td><td>Test: is result negative?</td></tr>
+            <tr><td>n+1</td><td><span class="key blue">g</span> <span class="key">GTO</span> 000</td><td>If yes → halt (go to line 000)</td></tr>
+            <tr><td>n+2</td><td>(continue)</td><td>If no → carry on with next step</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ PROG EDIT ══════════════ -->
+    <div class="section" id="prog_edit">
+      <div class="section-title">🛠️ Editing Programs</div>
+      <p class="section-subtitle">How to change, add, or delete instructions after a program is stored.</p>
+
+      <h3>Viewing the Program</h3>
+      <ol class="steps">
+        <li>Press <span class="key gold">f</span> <span class="key">P/R</span> to enter Program mode (PRGM indicator on)</li>
+        <li>Press <span class="key blue">g</span> <span class="key">GTO</span> <span class="key">.</span> <span class="key">000</span> to go to line 000</li>
+        <li>Press <span class="key">SST</span> repeatedly to step through each line and see the keycode stored there</li>
+      </ol>
+
+      <h3>Changing an Instruction</h3>
+      <div class="card">
+        <p>To replace the instruction on a specific line with a new one:</p>
+        <ol class="steps">
+          <li>Enter Program mode (<span class="key gold">f</span> <span class="key">P/R</span>)</li>
+          <li>Navigate to one line <em>before</em> the line you want to change using <span class="key">SST</span> or <span class="key blue">g</span> <span class="key">GTO</span> <em>NNN</em></li>
+          <li>Press <span class="key">SST</span> one more time to arrive at the target line</li>
+          <li>Simply press the new key — it overwrites the existing instruction</li>
+        </ol>
+        <div class="warning">⚠️ There is no "insert" in simple overwrite mode. Pressing a key at a line <em>replaces</em> whatever was there before.</div>
+      </div>
+
+      <h3>Adding Instructions at the End</h3>
+      <div class="card">
+        <ol class="steps">
+          <li>Enter Program mode</li>
+          <li>Step through to the last instruction of your existing program using SST</li>
+          <li>Press the new keystroke(s) — they will be added after the last instruction</li>
+        </ol>
+      </div>
+
+      <h3>Adding Instructions Within a Program</h3>
+      <p>Because there is no true "insert" function, there are two techniques:</p>
+
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(this,'edit-replace')">Method 1: Replacement</button>
+        <button class="tab-btn" onclick="switchTab(this,'edit-branch')">Method 2: Branching</button>
+      </div>
+
+      <div class="tab-content active" id="edit-replace">
+        <div class="card" style="margin-top:14px">
+          <p><strong>Best for short insertions.</strong> Re-key the affected lines by overwriting them with the new content + the instructions you're displacing.</p>
+          <ol class="steps">
+            <li>Navigate to the line where you want to insert</li>
+            <li>Type the new instruction(s) — they overwrite from this line forward</li>
+            <li>Continue typing the original instructions that were "pushed down" so they follow correctly</li>
+          </ol>
+          <div class="tip"><strong>Example:</strong> If you have lines 5, 6, 7 and want to insert a new step before line 6, go to line 5, then type: [new instruction] [old line 6] [old line 7].</div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="edit-branch">
+        <div class="card" style="margin-top:14px">
+          <p><strong>Best for larger insertions.</strong> Use GTO to detour the program to free space at the end of memory for the new instructions.</p>
+          <ol class="steps">
+            <li>Replace the line before the insertion point with a <span class="key blue">g</span> <span class="key">GTO</span> <em>NNN</em> instruction pointing to a free area at the end of program memory</li>
+            <li>At that free area, key in the new instructions</li>
+            <li>Then key in the original instructions that were "skipped" by the GTO</li>
+            <li>End with a <span class="key blue">g</span> <span class="key">GTO</span> back to the next line in the original program</li>
+          </ol>
+        </div>
+      </div>
+
+      <h3>Multiple Programs</h3>
+      <div class="card">
+        <p>You can store more than one program in memory at the same time. Each program starts at a specific line number. Use <span class="key blue">g</span> <span class="key">GTO</span> <em>NNN</em> to start execution at a specific program's first line.</p>
+        <table class="keystroke-table">
+          <tr><th>Task</th><th>Keystroke</th></tr>
+          <tr><td>Start Program 2 at line 050</td><td><span class="key blue">g</span> <span class="key">GTO</span> <span class="key">0</span><span class="key">5</span><span class="key">0</span>, then <span class="key">R/S</span></td></tr>
+          <tr><td>Check where program ends</td><td>Step through using SST until you see <span class="display">gi000</span></td></tr>
+          <tr><td>Start new program after existing one</td><td>Navigate to the line after the last <span class="display">gi000</span> and begin entering instructions</td></tr>
+        </table>
+        <div class="tip"><strong>Planning tip:</strong> Note down the starting line numbers of each of your programs so you can run them quickly with GTO.</div>
+      </div>
+
+      <h3>Common Programming Patterns</h3>
+      <div class="ref-grid">
+        <div class="ref-card">
+          <div class="ref-card-header">Store & Recall Pattern</div>
+          <table>
+            <tr><td>STO 0</td><td>Save input to R₀</td></tr>
+            <tr><td>RCL 0</td><td>Retrieve at start of loop</td></tr>
+            <tr><td>STO + 1</td><td>Add result to running total in R₁</td></tr>
+          </table>
+        </div>
+        <div class="ref-card">
+          <div class="ref-card-header">Display-then-Continue</div>
+          <table>
+            <tr><td>g PSE</td><td>Show result for ~1 sec</td></tr>
+            <tr><td>R/S (in program)</td><td>Full stop — user must press R/S</td></tr>
+            <tr><td>g GTO 002</td><td>Loop back to line 002</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ QUICK REF ══════════════ -->
+    <div class="section" id="quickref">
+      <div class="section-title">📋 Quick Reference Card</div>
+      <p class="section-subtitle">At-a-glance reference for the most commonly used functions.</p>
+
+      <div class="ref-grid">
+        <div class="ref-card">
+          <div class="ref-card-header">🔑 Essential Clearing</div>
+          <table>
+            <tr><td><span class="key gold">f</span> CLEAR FIN</td><td>Clear n, i, PV, PMT, FV</td></tr>
+            <tr><td><span class="key gold">f</span> CLEAR REG</td><td>Clear all data registers</td></tr>
+            <tr><td><span class="key gold">f</span> CLEAR PRGM</td><td>Clear program memory</td></tr>
+            <tr><td><span class="key gold">f</span> CLEAR PREFIX</td><td>Cancel a prefix key</td></tr>
+          </table>
+        </div>
+
+        <div class="ref-card">
+          <div class="ref-card-header">⏱️ TVM Keys</div>
+          <table>
+            <tr><td><span class="key">n</span></td><td>Number of periods</td></tr>
+            <tr><td><span class="key">i</span></td><td>Interest rate per period</td></tr>
+            <tr><td><span class="key">PV</span></td><td>Present value</td></tr>
+            <tr><td><span class="key">PMT</span></td><td>Periodic payment</td></tr>
+            <tr><td><span class="key">FV</span></td><td>Future value</td></tr>
+          </table>
+        </div>
+
+        <div class="ref-card">
+          <div class="ref-card-header">📅 Period Shortcuts</div>
+          <table>
+            <tr><td><span class="key">N</span> <span class="key blue">g</span> 12×</td><td>Years → months (n register)</td></tr>
+            <tr><td><span class="key">R</span> <span class="key blue">g</span> 12÷</td><td>Annual % → monthly %</td></tr>
+            <tr><td><span class="key blue">g</span> BEG</td><td>Annuity due (payments at start)</td></tr>
+            <tr><td><span class="key blue">g</span> END</td><td>Ordinary annuity (payments at end)</td></tr>
+          </table>
+        </div>
+
+        <div class="ref-card">
+          <div class="ref-card-header">💰 Cash Flow (NPV/IRR)</div>
+          <table>
+            <tr><td><span class="key blue">g</span> CFo</td><td>Initial cash flow (CF₀)</td></tr>
+            <tr><td><span class="key blue">g</span> CFj</td><td>Period cash flow</td></tr>
+            <tr><td><span class="key blue">g</span> Nj</td><td>Times CFj repeats</td></tr>
+            <tr><td><span class="key gold">f</span> NPV</td><td>Net Present Value</td></tr>
+            <tr><td><span class="key gold">f</span> IRR</td><td>Internal Rate of Return</td></tr>
+          </table>
+        </div>
+
+        <div class="ref-card">
+          <div class="ref-card-header">📊 Statistics</div>
+          <table>
+            <tr><td><span class="key">Σ+</span></td><td>Accumulate data point</td></tr>
+            <tr><td><span class="key blue">g</span> Σ−</td><td>Remove data point</td></tr>
+            <tr><td><span class="key blue">g</span> x̄</td><td>Mean</td></tr>
+            <tr><td><span class="key blue">g</span> s</td><td>Standard deviation</td></tr>
+            <tr><td><span class="key blue">g</span> L.R.</td><td>Linear regression (slope)</td></tr>
+          </table>
+        </div>
+
+        <div class="ref-card">
+          <div class="ref-card-header">📉 Depreciation</div>
+          <table>
+            <tr><td><span class="key gold">f</span> SL</td><td>Straight-line</td></tr>
+            <tr><td><span class="key gold">f</span> SOYD</td><td>Sum-of-years' digits</td></tr>
+            <tr><td><span class="key gold">f</span> DB</td><td>Declining balance</td></tr>
+          </table>
+        </div>
+
+        <div class="ref-card">
+          <div class="ref-card-header">💹 Percent Functions</div>
+          <table>
+            <tr><td><span class="key">%</span></td><td>Percent of number</td></tr>
+            <tr><td><span class="key">△%</span></td><td>Percent change</td></tr>
+            <tr><td><span class="key">%T</span></td><td>Percent of total</td></tr>
+          </table>
+        </div>
+
+        <div class="ref-card">
+          <div class="ref-card-header">📦 Display Formats</div>
+          <table>
+            <tr><td><span class="key gold">f</span> 2</td><td>Show 2 decimal places</td></tr>
+            <tr><td><span class="key gold">f</span> 4</td><td>Show 4 decimal places</td></tr>
+            <tr><td><span class="key gold">f</span> 9</td><td>Scientific notation</td></tr>
+            <tr><td><span class="key">,</span></td><td>Toggle . / , decimal separator</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <h3>Sign Convention Summary</h3>
+      <div class="card">
+        <table class="keystroke-table">
+          <tr><th>Value</th><th>Sign</th><th>Reason</th></tr>
+          <tr><td>Loan received</td><td style="color:#69f0ae">+ Positive</td><td>Money flowing IN to you</td></tr>
+          <tr><td>Loan payment</td><td style="color:#ef9a9a">− Negative</td><td>Money flowing OUT from you</td></tr>
+          <tr><td>Investment made</td><td style="color:#ef9a9a">− Negative</td><td>Money flowing OUT from you</td></tr>
+          <tr><td>Investment return</td><td style="color:#69f0ae">+ Positive</td><td>Money flowing IN to you</td></tr>
+          <tr><td>Savings deposit</td><td style="color:#ef9a9a">− Negative</td><td>Money flowing OUT from you</td></tr>
+          <tr><td>Savings withdrawal</td><td style="color:#69f0ae">+ Positive</td><td>Money flowing IN to you</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══════════════ TIPS ══════════════ -->
+    <div class="section" id="tips">
+      <div class="section-title">💡 Tips & Tricks</div>
+      <p class="section-subtitle">Power-user techniques to get more out of your HP 12C Platinum.</p>
+
+      <h3>Top 10 Tips for New Users</h3>
+      <ol class="steps">
+        <li><strong>Always clear before a new calculation.</strong> Press <span class="key gold">f</span> <span class="key">CLEAR FIN</span> before every new TVM problem to avoid using stale values.</li>
+        <li><strong>Use the shortcut keys for monthly calculations.</strong> <span class="key blue">g</span> <span class="key">12×</span> (years → months) and <span class="key blue">g</span> <span class="key">12÷</span> (annual rate → monthly rate) save time.</li>
+        <li><strong>The sign convention is your friend.</strong> If you get a wrong answer, check the signs. Outflows are negative — use <span class="key">CHS</span> to flip.</li>
+        <li><strong>Recall without recalculating.</strong> Use <span class="key">RCL</span> + key to see a stored value without triggering a calculation.</li>
+        <li><strong>x↔y swaps the two registers.</strong> Very useful after AMORT to see both interest and principal portions.</li>
+        <li><strong>LAST X recovers your last operand.</strong> Press <span class="key blue">g</span> <span class="key">LAST X</span> to recover the number used in the most recent operation — handy for error recovery.</li>
+        <li><strong>Continuous Memory keeps your data.</strong> Turning the calculator off doesn't erase anything — all registers are preserved until you explicitly clear them.</li>
+        <li><strong>Display format affects only what you see.</strong> The calculator always uses full 10-digit precision internally, regardless of how many decimals are displayed.</li>
+        <li><strong>AMORT automatically updates the register.</strong> After running AMORT for period 1, pressing AMORT again gives period 2 — you don't need to re-enter n.</li>
+        <li><strong>BEG vs END matters greatly.</strong> Lease and annuity-due problems use BEG; standard loan payments use END. Getting this wrong changes the answer.</li>
+      </ol>
+
+      <h3>Common Errors</h3>
+      <div class="card">
+        <table class="keystroke-table">
+          <tr><th>Error Display</th><th>Meaning</th><th>Fix</th></tr>
+          <tr><td><span class="display">Error 0</td><td>Math error (div by zero, etc.)</td><td>Check inputs for zero denominators</td></tr>
+          <tr><td><span class="display">Error 2</td><td>Statistics error</td><td>Need at least 2 data points</td></tr>
+          <tr><td><span class="display">Error 3</td><td>IRR — no solution found</td><td>Check cash flow signs (must have sign change)</td></tr>
+          <tr><td><span class="display">Error 4</td><td>Memory overflow</td><td>Too many cash flows — reduce data</td></tr>
+          <tr><td><span class="display">Error 5</td><td>Compound interest error</td><td>Check n, i signs/values</td></tr>
+          <tr><td><span class="display">Pr Error</td><td>Continuous Memory was reset</td><td>Press any key to clear; re-enter data</td></tr>
+        </table>
+      </div>
+
+      <h3>Storing & Recalling Numbers</h3>
+      <div class="card">
+        <p>The HP 12C has 20 numbered data registers (R₀ through R₉ and R.0 through R.9) for storing intermediate values.</p>
+        <table class="keystroke-table">
+          <tr><th>Action</th><th>Keystroke</th></tr>
+          <tr><td>Store in register 1</td><td><span class="key">STO</span> <span class="key">1</span></td></tr>
+          <tr><td>Recall from register 1</td><td><span class="key">RCL</span> <span class="key">1</span></td></tr>
+          <tr><td>Add to register 3</td><td><span class="key">STO</span> <span class="key">+</span> <span class="key">3</span></td></tr>
+          <tr><td>Subtract from register 3</td><td><span class="key">STO</span> <span class="key">−</span> <span class="key">3</span></td></tr>
+        </table>
+      </div>
+
+      <h3>Date Calculations</h3>
+      <div class="card">
+        <p>The HP 12C can calculate the number of days between two dates, or find a future/past date.</p>
+        <ol class="steps">
+          <li>Set date format: <span class="key blue">g</span> <span class="key">D.MY</span> (day/month/year) or <span class="key blue">g</span> <span class="key">M.DY</span> (default: month/day/year)</li>
+          <li>Enter first date as MM.DDYYYY, press <span class="key">ENTER</span></li>
+          <li>Enter second date as MM.DDYYYY</li>
+          <li>Press <span class="key blue">g</span> <span class="key">DAYS</span> — shows actual days between dates</li>
+          <li>Press <span class="key">x↔y</span> to see days on 360-day basis</li>
+        </ol>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  function toggleNav() {
+    const nav     = document.getElementById('sidebar');
+    const btn     = document.getElementById('hamburgerBtn');
+    const overlay = document.getElementById('navOverlay');
+    const isOpen  = nav.classList.toggle('open');
+    btn.classList.toggle('open', isOpen);
+    overlay.classList.toggle('visible', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  }
+
+  function showSection(id, linkEl) {
+    // Hide all sections
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    // Remove active from all nav links
+    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+
+    // Show selected
+    const target = document.getElementById(id);
+    if (target) target.classList.add('active');
+    if (linkEl) linkEl.classList.add('active');
+
+    // Close nav drawer on mobile after selecting
+    const nav = document.getElementById('sidebar');
+    if (nav.classList.contains('open')) toggleNav();
+
+    // Scroll to top of main content
+    document.querySelector('main').scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function switchTab(btn, tabId) {
+    // Find the parent section and deactivate all tabs in it
+    const parent = btn.closest('.section') || btn.closest('main');
+    // Only deactivate tabs within the same tab group
+    const tabGroup = btn.closest('.tabs');
+    const tabContents = [];
+    let el = tabGroup.nextElementSibling;
+    while (el && el.classList.contains('tab-content')) {
+      tabContents.push(el);
+      el = el.nextElementSibling;
+    }
+
+    tabGroup.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    tabContents.forEach(tc => tc.classList.remove('active'));
+
+    btn.classList.add('active');
+    const target = document.getElementById(tabId);
+    if (target) target.classList.add('active');
+  }
+</script>
+</body>
+</html>
