@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0f0f1e" />
   <title>HP 12C Platinum – Interactive Tutorial</title>
   <style>
     :root {
@@ -24,11 +25,14 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    html { -webkit-text-size-adjust: 100%; }
+
     body {
       font-family: 'Segoe UI', system-ui, sans-serif;
       background: var(--darker);
       color: var(--text);
       line-height: 1.6;
+      overflow-x: hidden;
     }
 
     /* ── TOP HEADER ── */
@@ -99,25 +103,97 @@
       padding: 14px 20px 6px;
     }
 
-    nav a {
+    .navlink {
       display: flex;
       align-items: center;
+      width: 100%;
       gap: 10px;
       padding: 9px 20px;
       color: var(--text-dim);
       text-decoration: none;
+      font: inherit;
       font-size: 0.875rem;
+      background: none;
+      border: none;
       border-left: 3px solid transparent;
       transition: all 0.15s;
+      cursor: pointer;
+      text-align: left;
     }
 
-    nav a:hover, nav a.active {
+    .navlink:hover, .navlink.active {
       color: var(--gold-light);
       background: rgba(200,168,75,0.08);
       border-left-color: var(--gold);
     }
 
-    nav a .nav-icon { font-size: 1rem; width: 20px; text-align: center; flex-shrink: 0; }
+    .navlink.visited::after {
+      content: '\2713';
+      margin-left: auto;
+      padding-left: 8px;
+      color: var(--green);
+      font-size: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .navlink.nav-hidden, .nav-section-label.nav-hidden { display: none; }
+
+    .navlink .nav-icon { font-size: 1rem; width: 20px; text-align: center; flex-shrink: 0; }
+
+    /* ── NAV SEARCH ── */
+    .nav-search-wrap { padding: 4px 16px 14px; }
+    .nav-search {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(200,168,75,0.25);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      font-size: 0.82rem;
+      font-family: inherit;
+    }
+    .nav-search::placeholder { color: var(--text-dim); }
+    .nav-search:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+
+    /* ── NAV PROGRESS ── */
+    .nav-progress {
+      margin: 18px 16px 8px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(200,168,75,0.15);
+    }
+    .nav-progress-label { font-size: 0.7rem; color: var(--text-dim); margin-bottom: 6px; }
+    .nav-progress-bar { height: 5px; border-radius: 3px; background: rgba(255,255,255,0.08); overflow: hidden; }
+    .nav-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--gold-dark), var(--gold)); transition: width 0.25s ease; }
+    .nav-reset-btn {
+      margin-top: 10px;
+      background: none;
+      border: 1px solid rgba(200,168,75,0.25);
+      color: var(--text-dim);
+      font-size: 0.7rem;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .nav-reset-btn:hover { color: var(--gold-light); border-color: var(--gold); }
+
+    /* ── ACCESSIBILITY ── */
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+    .skip-link {
+      position: absolute; left: 8px; top: -48px;
+      background: var(--gold); color: #1a1000; font-weight: 700;
+      padding: 10px 16px; border-radius: 8px; z-index: 300;
+      text-decoration: none; transition: top 0.15s ease;
+    }
+    .skip-link:focus { top: 8px; }
+    a:focus-visible, button:focus-visible, input:focus-visible {
+      outline: 2px solid var(--gold-light);
+      outline-offset: 2px;
+    }
 
     /* ── MAIN CONTENT ── */
     main {
@@ -447,26 +523,60 @@
     }
     .nav-overlay.visible { display: block; }
 
-    @media (max-width: 700px) {
+    /* Tables: horizontal scroll instead of overflow/breakage on narrow screens */
+    @media (max-width: 900px) {
+      .keystroke-table, .ref-card table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .keystroke-table th, .keystroke-table td { white-space: nowrap; }
+    }
+
+    /* Tablet + mobile: collapse sidebar into a drawer */
+    @media (max-width: 860px) {
       .ref-grid { grid-template-columns: 1fr; }
-      main { padding: 20px; }
+      main { padding: 20px; max-width: 100%; }
       .hamburger { display: flex; }
       .header-badge { display: none; }
       header { padding: 14px 16px; }
       header h1 { font-size: 1.1rem; }
       header p  { display: none; }
 
+      .card-grid[style*="repeat(3"],
+      .card-grid[style*="repeat(5"] { grid-template-columns: repeat(2,1fr) !important; }
+
+      .hero { flex-direction: column; text-align: center; padding: 24px 20px; }
+      .hero-stats { justify-content: center; }
+
       nav {
         position: fixed;
         top: 0; left: 0;
         height: 100vh;
         width: 260px;
+        max-width: 82vw;
         z-index: 150;
         transform: translateX(-100%);
         transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
         box-shadow: 4px 0 24px rgba(0,0,0,0.6);
       }
       nav.open { transform: translateX(0); }
+    }
+
+    /* Small phones */
+    @media (max-width: 480px) {
+      main { padding: 14px; }
+      .section-title { font-size: 1.35rem; }
+      .card, .example, .tip, .warning, .formula { padding: 14px 16px; }
+      .card-grid, .card-grid[style*="repeat(3"], .card-grid[style*="repeat(5"] {
+        grid-template-columns: 1fr !important;
+      }
+      .ref-card td:first-child { width: auto; }
+      .key-row { flex-wrap: wrap; }
+      .calc-visual { padding: 16px; }
+      .tab-btn { padding: 9px 12px; font-size: 0.78rem; }
+      .section-nav-btn { padding: 10px 14px; font-size: 0.8rem; }
+      .rpn-keypad { grid-template-columns: repeat(4, 1fr); }
     }
 
     .ref-card {
@@ -594,9 +704,217 @@
     main::-webkit-scrollbar { width: 5px; }
     main::-webkit-scrollbar-track { background: transparent; }
     main::-webkit-scrollbar-thumb { background: rgba(200,168,75,0.3); border-radius: 4px; }
+
+    /* ── RPN PRACTICE SIMULATOR ── */
+    .rpn-sim {
+      background: linear-gradient(180deg, #2a2a3a 0%, #1a1a28 100%);
+      border: 2px solid rgba(200,168,75,0.4);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
+
+    .rpn-stack {
+      background: #0d1f0d;
+      border: 2px inset #1a3a1a;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      box-shadow: inset 0 4px 10px rgba(0,0,0,0.7);
+      font-family: 'Courier New', monospace;
+    }
+
+    .rpn-reg {
+      display: flex;
+      justify-content: space-between;
+      padding: 3px 2px;
+      font-size: 0.95rem;
+      color: #4d8f4d;
+    }
+
+    .rpn-reg.is-x { color: #90ee55; font-size: 1.25rem; font-weight: 700; border-top: 1px solid #1a3a1a; margin-top: 4px; padding-top: 6px; }
+    .rpn-reg .reg-label { color: var(--gold-dark); font-size: 0.7rem; align-self: center; }
+
+    .rpn-keypad {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .rpn-key {
+      background: linear-gradient(145deg, #3a3a4a, #252535);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      padding: 10px 4px;
+      font-size: 0.85rem;
+      font-family: 'Courier New', monospace;
+      color: #fff;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+    .rpn-key:hover { filter: brightness(1.2); }
+    .rpn-key:active { transform: translateY(1px); }
+    .rpn-key.op { background: linear-gradient(145deg, var(--gold), var(--gold-dark)); color: #1a1a00; }
+    .rpn-key.enter { background: linear-gradient(145deg, #1565c0, #0d47a1); grid-column: span 2; }
+    .rpn-key.clear { background: linear-gradient(145deg, #c62828, #8e0000); }
+
+    .rpn-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+
+    .rpn-log {
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 10px 14px;
+      max-height: 140px;
+      overflow-y: auto;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      font-family: 'Courier New', monospace;
+    }
+    .rpn-log div { padding: 2px 0; }
+    .rpn-log .empty { color: rgba(160,160,176,0.5); font-style: italic; }
+
+    /* ── GENERIC CALCULATOR WIDGETS (TVM / Interest / Mortgage / Cash Flow / Depreciation / Statistics) ── */
+    .calc-widget {
+      background: var(--card);
+      border: 1px solid rgba(200,168,75,0.25);
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin: 18px 0 26px;
+    }
+
+    .calc-widget-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gold);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .calc-widget-sub { font-size: 0.82rem; color: var(--text-dim); margin-bottom: 16px; }
+
+    .calc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .calc-field label {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .calc-field input, .calc-field select, .calc-field textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(200,168,75,0.25);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      font-size: 0.88rem;
+      resize: vertical;
+    }
+
+    .calc-field input::placeholder, .calc-field textarea::placeholder { color: rgba(160,160,176,0.5); }
+    .calc-field input:focus, .calc-field select:focus, .calc-field textarea:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+    .calc-field.is-target input { border-color: var(--gold); background: rgba(200,168,75,0.1); }
+    .calc-field-hint { font-size: 0.68rem; color: rgba(160,160,176,0.7); margin-top: 3px; }
+
+    .calc-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
+
+    .calc-btn {
+      padding: 9px 20px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: #1a1000;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-family: inherit;
+    }
+    .calc-btn:hover { filter: brightness(1.08); }
+
+    .calc-btn.secondary {
+      background: none;
+      border: 1px solid rgba(200,168,75,0.3);
+      color: var(--text-dim);
+      font-weight: 600;
+    }
+    .calc-btn.secondary:hover { color: var(--gold-light); border-color: var(--gold); }
+
+    .calc-result {
+      background: rgba(76,175,80,0.08);
+      border: 1px solid rgba(76,175,80,0.3);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 0.9rem;
+      color: #a5d6a7;
+      margin-bottom: 4px;
+    }
+    .calc-result .big { font-size: 1.35rem; font-weight: 700; color: #69f0ae; font-family: 'Courier New', monospace; display: block; margin: 2px 0 4px; }
+    .calc-result.error { background: rgba(233,69,96,0.1); border-color: rgba(233,69,96,0.3); color: #ef9a9a; }
+    .calc-result .line { display: flex; justify-content: space-between; gap: 10px; padding: 2px 0; }
+    .calc-result .line span:last-child { font-family: 'Courier New', monospace; color: #c8e6c9; }
+
+    .calc-schedule-wrap {
+      max-height: 320px;
+      overflow-y: auto;
+      overflow-x: auto;
+      margin-top: 14px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .calc-schedule-wrap table { width: 100%; border-collapse: collapse; font-size: 0.8rem; white-space: nowrap; }
+    .calc-schedule-wrap th {
+      position: sticky; top: 0;
+      background: #16213e;
+      color: var(--gold);
+      padding: 8px 12px;
+      text-align: right;
+      border-bottom: 2px solid rgba(200,168,75,0.3);
+    }
+    .calc-schedule-wrap th:first-child, .calc-schedule-wrap td:first-child { text-align: left; }
+    .calc-schedule-wrap td { padding: 6px 12px; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--text-dim); }
+    .calc-schedule-wrap tr:hover td { background: rgba(200,168,75,0.04); }
+
+    .calc-row-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+    .calc-row-list .calc-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: end; }
+    .calc-remove-btn {
+      background: rgba(233,69,96,0.12);
+      border: 1px solid rgba(233,69,96,0.35);
+      color: #ef9a9a;
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-family: inherit;
+    }
+    .calc-remove-btn:hover { background: rgba(233,69,96,0.22); }
+
+    @media (max-width: 480px) {
+      .calc-widget { padding: 16px 16px; }
+      .calc-row-list .calc-row { grid-template-columns: 1fr 1fr; }
+      .calc-row-list .calc-remove-btn { grid-column: span 2; }
+    }
   </style>
 </head>
 <body>
+
+<a href="#mainContent" class="skip-link">Skip to content</a>
+<div id="srAnnounce" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
 <!-- HEADER -->
 <header>
@@ -616,63 +934,76 @@
 <div class="container">
 
   <!-- SIDEBAR NAV -->
-  <nav id="sidebar">
+  <nav id="sidebar" aria-label="Tutorial navigation">
+    <div class="nav-search-wrap">
+      <input type="search" id="navSearch" class="nav-search" placeholder="Search topics…"
+             aria-label="Search tutorial sections" autocomplete="off"
+             oninput="filterNav(this.value)"
+             onkeydown="if(event.key==='Enter'){jumpToFirstMatch();}">
+    </div>
+
     <div class="nav-section-label">Start Here</div>
-    <a href="#" class="active" onclick="showSection('home',this)">
+    <button type="button" class="navlink active" data-sec="home" aria-current="page" onclick="showSection('home')">
       <span class="nav-icon">🏠</span> Overview
-    </a>
-    <a href="#" onclick="showSection('keyboard',this)">
+    </button>
+    <button type="button" class="navlink" data-sec="keyboard" onclick="showSection('keyboard')">
       <span class="nav-icon">⌨️</span> The Keyboard
-    </a>
-    <a href="#" onclick="showSection('rpn',this)">
+    </button>
+    <button type="button" class="navlink" data-sec="rpn" onclick="showSection('rpn')">
       <span class="nav-icon">🔢</span> RPN vs ALG Mode
-    </a>
+    </button>
 
     <div class="nav-section-label">Core Functions</div>
-    <a href="#" onclick="showSection('tvm',this)">
+    <button type="button" class="navlink" data-sec="tvm" onclick="showSection('tvm')">
       <span class="nav-icon">⏱️</span> Time Value of Money
-    </a>
-    <a href="#" onclick="showSection('interest',this)">
+    </button>
+    <button type="button" class="navlink" data-sec="interest" onclick="showSection('interest')">
       <span class="nav-icon">💹</span> Interest Calculations
-    </a>
-    <a href="#" onclick="showSection('mortgage',this)">
-      <span class="nav-icon">🏠</span> Mortgages & Loans
-    </a>
-    <a href="#" onclick="showSection('cashflow',this)">
+    </button>
+    <button type="button" class="navlink" data-sec="mortgage" onclick="showSection('mortgage')">
+      <span class="nav-icon">🏠</span> Mortgages &amp; Loans
+    </button>
+    <button type="button" class="navlink" data-sec="cashflow" onclick="showSection('cashflow')">
       <span class="nav-icon">💰</span> Cash Flow Analysis
-    </a>
-    <a href="#" onclick="showSection('depreciation',this)">
+    </button>
+    <button type="button" class="navlink" data-sec="depreciation" onclick="showSection('depreciation')">
       <span class="nav-icon">📉</span> Depreciation
-    </a>
-    <a href="#" onclick="showSection('statistics',this)">
+    </button>
+    <button type="button" class="navlink" data-sec="statistics" onclick="showSection('statistics')">
       <span class="nav-icon">📊</span> Statistics
-    </a>
+    </button>
 
     <div class="nav-section-label">Programming</div>
-    <a href="#" onclick="showSection('prog_intro',this)">
+    <button type="button" class="navlink" data-sec="prog_intro" onclick="showSection('prog_intro')">
       <span class="nav-icon">💾</span> Why Programs?
-    </a>
-    <a href="#" onclick="showSection('prog_create',this)">
-      <span class="nav-icon">✏️</span> Creating & Running
-    </a>
-    <a href="#" onclick="showSection('prog_branch',this)">
-      <span class="nav-icon">🔁</span> Branching & Looping
-    </a>
-    <a href="#" onclick="showSection('prog_edit',this)">
+    </button>
+    <button type="button" class="navlink" data-sec="prog_create" onclick="showSection('prog_create')">
+      <span class="nav-icon">✏️</span> Creating &amp; Running
+    </button>
+    <button type="button" class="navlink" data-sec="prog_branch" onclick="showSection('prog_branch')">
+      <span class="nav-icon">🔁</span> Branching &amp; Looping
+    </button>
+    <button type="button" class="navlink" data-sec="prog_edit" onclick="showSection('prog_edit')">
       <span class="nav-icon">🛠️</span> Editing Programs
-    </a>
+    </button>
 
     <div class="nav-section-label">Reference</div>
-    <a href="#" onclick="showSection('quickref',this)">
+    <button type="button" class="navlink" data-sec="quickref" onclick="showSection('quickref')">
       <span class="nav-icon">📋</span> Quick Reference
-    </a>
-    <a href="#" onclick="showSection('tips',this)">
-      <span class="nav-icon">💡</span> Tips & Tricks
-    </a>
+    </button>
+    <button type="button" class="navlink" data-sec="tips" onclick="showSection('tips')">
+      <span class="nav-icon">💡</span> Tips &amp; Tricks
+    </button>
+
+    <div class="nav-progress">
+      <div class="nav-progress-label">Progress: <span id="progressCount">0</span>/<span id="progressTotal">15</span></div>
+      <div class="nav-progress-bar"><div class="nav-progress-fill" id="progressFill"></div></div>
+      <button type="button" class="nav-reset-btn" onclick="resetProgress()">Reset progress</button>
+    </div>
   </nav>
 
   <!-- MAIN CONTENT -->
-  <main>
+  <main id="mainContent" tabindex="-1">
 
     <!-- ══════════════ HOME ══════════════ -->
     <div class="section active" id="home">
@@ -692,32 +1023,32 @@
 
       <h3>What You'll Learn</h3>
       <div class="card-grid">
-        <div class="info-card" style="cursor:pointer" onclick="showSection('tvm',document.querySelector('[onclick*=tvm]'))">
+        <div class="info-card" style="cursor:pointer" onclick="showSection('tvm')">
           <div class="icon">⏱️</div>
           <div class="value">TVM</div>
           <div class="label">Time Value of Money</div>
         </div>
-        <div class="info-card" style="cursor:pointer" onclick="showSection('interest',document.querySelector('[onclick*=interest]'))">
+        <div class="info-card" style="cursor:pointer" onclick="showSection('interest')">
           <div class="icon">💹</div>
           <div class="value">Interest</div>
           <div class="label">Simple & Compound</div>
         </div>
-        <div class="info-card" style="cursor:pointer" onclick="showSection('mortgage',document.querySelector('[onclick*=mortgage]'))">
+        <div class="info-card" style="cursor:pointer" onclick="showSection('mortgage')">
           <div class="icon">🏠</div>
           <div class="value">Mortgages</div>
           <div class="label">Loans & Amortization</div>
         </div>
-        <div class="info-card" style="cursor:pointer" onclick="showSection('cashflow',document.querySelector('[onclick*=cashflow]'))">
+        <div class="info-card" style="cursor:pointer" onclick="showSection('cashflow')">
           <div class="icon">💰</div>
           <div class="value">NPV / IRR</div>
           <div class="label">Cash Flow Analysis</div>
         </div>
-        <div class="info-card" style="cursor:pointer" onclick="showSection('depreciation',document.querySelector('[onclick*=depreciation]'))">
+        <div class="info-card" style="cursor:pointer" onclick="showSection('depreciation')">
           <div class="icon">📉</div>
           <div class="value">Depreciation</div>
           <div class="label">SL, DB, SOYD</div>
         </div>
-        <div class="info-card" style="cursor:pointer" onclick="showSection('statistics',document.querySelector('[onclick*=statistics]'))">
+        <div class="info-card" style="cursor:pointer" onclick="showSection('statistics')">
           <div class="icon">📊</div>
           <div class="value">Statistics</div>
           <div class="label">Mean, Std Dev, Regression</div>
@@ -733,10 +1064,10 @@
 
       <h3>Navigate This Tutorial</h3>
       <div class="section-nav">
-        <button class="section-nav-btn" onclick="showSection('keyboard',document.querySelector('[onclick*=keyboard]'))">⌨️ The Keyboard</button>
-        <button class="section-nav-btn" onclick="showSection('rpn',document.querySelector('[onclick*=rpn]'))">🔢 RPN Mode</button>
-        <button class="section-nav-btn" onclick="showSection('tvm',document.querySelector('[onclick*=tvm]'))">⏱️ TVM →</button>
-        <button class="section-nav-btn" onclick="showSection('quickref',document.querySelector('[onclick*=quickref]'))">📋 Quick Reference</button>
+        <button class="section-nav-btn" onclick="showSection('keyboard')">⌨️ The Keyboard</button>
+        <button class="section-nav-btn" onclick="showSection('rpn')">🔢 RPN Mode</button>
+        <button class="section-nav-btn" onclick="showSection('tvm')">⏱️ TVM →</button>
+        <button class="section-nav-btn" onclick="showSection('quickref')">📋 Quick Reference</button>
       </div>
     </div>
 
@@ -866,13 +1197,14 @@
       <div class="section-title">🔢 RPN vs ALG Mode</div>
       <p class="section-subtitle">Understanding how to enter numbers and operations is essential for efficient calculation.</p>
 
-      <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab(this,'rpn-tab')">RPN Mode (Default)</button>
-        <button class="tab-btn" onclick="switchTab(this,'alg-tab')">ALG Mode</button>
-        <button class="tab-btn" onclick="switchTab(this,'compare-tab')">Side-by-Side</button>
+      <div class="tabs" role="tablist">
+        <button class="tab-btn active" id="tabbtn-rpn-tab" role="tab" aria-selected="true" aria-controls="rpn-tab" onclick="switchTab(this,'rpn-tab')">RPN Mode (Default)</button>
+        <button class="tab-btn" id="tabbtn-alg-tab" role="tab" aria-selected="false" aria-controls="alg-tab" tabindex="-1" onclick="switchTab(this,'alg-tab')">ALG Mode</button>
+        <button class="tab-btn" id="tabbtn-compare-tab" role="tab" aria-selected="false" aria-controls="compare-tab" tabindex="-1" onclick="switchTab(this,'compare-tab')">Side-by-Side</button>
+        <button class="tab-btn" id="tabbtn-practice-tab" role="tab" aria-selected="false" aria-controls="practice-tab" tabindex="-1" onclick="switchTab(this,'practice-tab')">🎮 Try It Live</button>
       </div>
 
-      <div class="tab-content active" id="rpn-tab">
+      <div class="tab-content active" id="rpn-tab" role="tabpanel" aria-labelledby="tabbtn-rpn-tab">
         <h3>Reverse Polish Notation (RPN)</h3>
         <p>In RPN mode, you enter the operands <em>first</em>, then press the operator. The calculator uses a <strong>4-level stack</strong> (X, Y, Z, T) to hold intermediate values.</p>
 
@@ -912,7 +1244,7 @@
         <div class="tip"><strong>To switch TO RPN mode:</strong> Press <span class="key gold">f</span> <span class="key">MODE</span> until no "ALG" indicator shows in display.</div>
       </div>
 
-      <div class="tab-content" id="alg-tab">
+      <div class="tab-content" id="alg-tab" role="tabpanel" aria-labelledby="tabbtn-alg-tab" hidden>
         <h3>Algebraic (ALG) Mode</h3>
         <p>ALG mode works like a regular calculator — enter the first number, press the operator, then enter the second number and press <span class="key">=</span>.</p>
 
@@ -929,7 +1261,7 @@
         </div>
       </div>
 
-      <div class="tab-content" id="compare-tab">
+      <div class="tab-content" id="compare-tab" role="tabpanel" aria-labelledby="tabbtn-compare-tab" hidden>
         <h3>RPN vs ALG: Same Calculation</h3>
         <p>Problem: Calculate monthly interest rate from 6% annual rate</p>
         <div class="card-grid" style="grid-template-columns:1fr 1fr">
@@ -951,6 +1283,56 @@
           </div>
         </div>
         <div class="tip">The HP 12C's TVM and financial functions work the same regardless of RPN or ALG mode.</div>
+      </div>
+
+      <div class="tab-content" id="practice-tab" role="tabpanel" aria-labelledby="tabbtn-practice-tab" hidden>
+        <h3>Practice: Live RPN Stack Simulator</h3>
+        <p>This mimics the HP 12C's 4-register stack (X, Y, Z, T). Click the keys below — or use your keyboard — and watch the stack move exactly like it would on the real calculator.</p>
+
+        <div class="rpn-sim">
+          <div class="rpn-stack" aria-hidden="false">
+            <div class="rpn-reg"><span class="reg-label">T</span><span id="rpnT">0.00</span></div>
+            <div class="rpn-reg"><span class="reg-label">Z</span><span id="rpnZ">0.00</span></div>
+            <div class="rpn-reg"><span class="reg-label">Y</span><span id="rpnY">0.00</span></div>
+            <div class="rpn-reg is-x"><span class="reg-label">X</span><span id="rpnX" aria-live="polite">0.00</span></div>
+          </div>
+
+          <div class="rpn-keypad" role="group" aria-label="RPN calculator keys">
+            <button type="button" class="rpn-key" onclick="rpnDigit('7')">7</button>
+            <button type="button" class="rpn-key" onclick="rpnDigit('8')">8</button>
+            <button type="button" class="rpn-key" onclick="rpnDigit('9')">9</button>
+            <button type="button" class="rpn-key op" onclick="rpnOp('/')">÷</button>
+            <button type="button" class="rpn-key clear" onclick="rpnClear()">CLx</button>
+
+            <button type="button" class="rpn-key" onclick="rpnDigit('4')">4</button>
+            <button type="button" class="rpn-key" onclick="rpnDigit('5')">5</button>
+            <button type="button" class="rpn-key" onclick="rpnDigit('6')">6</button>
+            <button type="button" class="rpn-key op" onclick="rpnOp('*')">×</button>
+            <button type="button" class="rpn-key" onclick="rpnBackspace()" aria-label="Backspace">DEL</button>
+
+            <button type="button" class="rpn-key" onclick="rpnDigit('1')">1</button>
+            <button type="button" class="rpn-key" onclick="rpnDigit('2')">2</button>
+            <button type="button" class="rpn-key" onclick="rpnDigit('3')">3</button>
+            <button type="button" class="rpn-key op" onclick="rpnOp('-')">−</button>
+            <button type="button" class="rpn-key" onclick="rpnChs()">CHS</button>
+
+            <button type="button" class="rpn-key" onclick="rpnDigit('0')">0</button>
+            <button type="button" class="rpn-key" onclick="rpnDecimal()">.</button>
+            <button type="button" class="rpn-key op" onclick="rpnPercent()">%</button>
+            <button type="button" class="rpn-key op" onclick="rpnOp('+')">+</button>
+            <button type="button" class="rpn-key enter" onclick="rpnEnter()">ENTER</button>
+          </div>
+
+          <div class="rpn-actions">
+            <button type="button" class="section-nav-btn" onclick="rpnRunExample(1)">▶ Run: (3 + 4) × 2</button>
+            <button type="button" class="section-nav-btn" onclick="rpnRunExample(2)">▶ Run: 450 + 7% interest</button>
+            <button type="button" class="section-nav-btn" onclick="rpnLogClear()">Clear log</button>
+          </div>
+
+          <div class="rpn-log" id="rpnLog" aria-live="polite">
+            <div class="empty">Keystrokes will appear here as you go.</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -983,14 +1365,14 @@
         <li>Press the <strong>unknown</strong> register key to calculate it</li>
       </ol>
 
-      <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab(this,'tvm-ex1')">College Savings</button>
-        <button class="tab-btn" onclick="switchTab(this,'tvm-ex2')">Future Value</button>
-        <button class="tab-btn" onclick="switchTab(this,'tvm-ex3')">Required Payment</button>
-        <button class="tab-btn" onclick="switchTab(this,'tvm-ex4')">Find Interest Rate</button>
+      <div class="tabs" role="tablist">
+        <button class="tab-btn active" id="tabbtn-tvm-ex1" role="tab" aria-selected="true" aria-controls="tvm-ex1" onclick="switchTab(this,'tvm-ex1')">College Savings</button>
+        <button class="tab-btn" id="tabbtn-tvm-ex2" role="tab" aria-selected="false" aria-controls="tvm-ex2" tabindex="-1" onclick="switchTab(this,'tvm-ex2')">Future Value</button>
+        <button class="tab-btn" id="tabbtn-tvm-ex3" role="tab" aria-selected="false" aria-controls="tvm-ex3" tabindex="-1" onclick="switchTab(this,'tvm-ex3')">Required Payment</button>
+        <button class="tab-btn" id="tabbtn-tvm-ex4" role="tab" aria-selected="false" aria-controls="tvm-ex4" tabindex="-1" onclick="switchTab(this,'tvm-ex4')">Find Interest Rate</button>
       </div>
 
-      <div class="tab-content active" id="tvm-ex1">
+      <div class="tab-content active" id="tvm-ex1" role="tabpanel" aria-labelledby="tabbtn-tvm-ex1">
         <div class="example">
           <div class="example-title">📝 Example 1: How much to deposit for college savings?</div>
           <p><strong>Problem:</strong> You need $500/month for 4 years (48 months) starting in college. Account pays 6% annual interest, compounded monthly. She withdraws at the <em>beginning</em> of each month. How much to deposit now?</p>
@@ -1008,7 +1390,7 @@
         </div>
       </div>
 
-      <div class="tab-content" id="tvm-ex2">
+      <div class="tab-content" id="tvm-ex2" role="tabpanel" aria-labelledby="tabbtn-tvm-ex2" hidden>
         <div class="example">
           <div class="example-title">📝 Example 2: Future Value of an Insurance Policy</div>
           <p><strong>Problem:</strong> A $5,000 paid-up insurance policy pays 5.35% compounded annually. What is it worth in 14 years?</p>
@@ -1023,7 +1405,7 @@
         </div>
       </div>
 
-      <div class="tab-content" id="tvm-ex3">
+      <div class="tab-content" id="tvm-ex3" role="tabpanel" aria-labelledby="tabbtn-tvm-ex3" hidden>
         <div class="example">
           <div class="example-title">📝 Example 3: Required Monthly Payment</div>
           <p><strong>Problem:</strong> You need to accumulate $11,024.82 in 14 years with monthly deposits at 6% annual rate. What's the monthly payment?</p>
@@ -1039,7 +1421,7 @@
         </div>
       </div>
 
-      <div class="tab-content" id="tvm-ex4">
+      <div class="tab-content" id="tvm-ex4" role="tabpanel" aria-labelledby="tabbtn-tvm-ex4" hidden>
         <div class="example">
           <div class="example-title">📝 Example 4: Solving for Interest Rate</div>
           <p><strong>Problem:</strong> You can afford $45/month for 168 months to accumulate $11,024.82. What is the minimum annual interest rate needed?</p>
@@ -1050,6 +1432,47 @@
             <tr><td><span class="key">RCL</span> <span class="key blue">g</span> <span class="key">12÷</span></td><td><span class="display">5.13</span></td><td>💡 Annual rate = 5.13%</td></tr>
           </table>
         </div>
+      </div>
+
+      <div class="calc-widget">
+        <div class="calc-widget-title">🧮 Try It Yourself — TVM Solver</div>
+        <div class="calc-widget-sub">Fill in any four of the five values below, pick which one to solve for, and hit Solve. Same sign convention as the real calculator: outflows negative, inflows positive.</div>
+
+        <div class="calc-grid" style="grid-template-columns:1fr 1fr;">
+          <div class="calc-field">
+            <label for="tvmSolveFor">Solve for</label>
+            <select id="tvmSolveFor" onchange="tvmToggleTarget()">
+              <option value="n">n (periods)</option>
+              <option value="i">i (rate)</option>
+              <option value="pv">PV</option>
+              <option value="pmt">PMT</option>
+              <option value="fv" selected>FV</option>
+            </select>
+          </div>
+          <div class="calc-field">
+            <label for="tvmMode">Payment timing</label>
+            <select id="tvmMode">
+              <option value="end" selected>End (ordinary annuity)</option>
+              <option value="begin">Begin (annuity due)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="calc-grid">
+          <div class="calc-field" id="tvmField-n"><label for="tvmN">n (periods)</label><input type="number" id="tvmN" placeholder="e.g. 48" step="any"></div>
+          <div class="calc-field" id="tvmField-i"><label for="tvmI">i (%/period)</label><input type="number" id="tvmI" placeholder="e.g. 0.5" step="any"></div>
+          <div class="calc-field" id="tvmField-pv"><label for="tvmPV">PV</label><input type="number" id="tvmPV" placeholder="e.g. -21396.61" step="any"></div>
+          <div class="calc-field" id="tvmField-pmt"><label for="tvmPMT">PMT</label><input type="number" id="tvmPMT" placeholder="e.g. 500" step="any"></div>
+          <div class="calc-field is-target" id="tvmField-fv"><label for="tvmFV">FV</label><input type="number" id="tvmFV" placeholder="e.g. 0" step="any"></div>
+        </div>
+
+        <div class="calc-actions">
+          <button type="button" class="calc-btn" onclick="tvmSolve()">Solve</button>
+          <button type="button" class="calc-btn secondary" onclick="tvmLoadExample()">Load Example 1 (solve PV)</button>
+          <button type="button" class="calc-btn secondary" onclick="tvmClear()">Clear</button>
+        </div>
+
+        <div class="calc-result" id="tvmResult">Fill in four values and pick what to solve for.</div>
       </div>
     </div>
 
@@ -1129,6 +1552,41 @@
           <p>A 12% nominal rate compounded monthly equals a 12.68% effective annual rate.</p>
         </div>
       </div>
+
+      <div class="calc-widget">
+        <div class="calc-widget-title">🧮 Try It Yourself — Simple Interest</div>
+        <div class="calc-widget-sub">Computes interest on both the 360-day and 365-day basis at once, just like the real HP 12C.</div>
+        <div class="calc-grid">
+          <div class="calc-field"><label for="siPrincipal">Principal ($)</label><input type="number" id="siPrincipal" placeholder="e.g. 450" step="any"></div>
+          <div class="calc-field"><label for="siRate">Annual rate (%)</label><input type="number" id="siRate" placeholder="e.g. 7" step="any"></div>
+          <div class="calc-field"><label for="siDays">Days</label><input type="number" id="siDays" placeholder="e.g. 60" step="any"></div>
+        </div>
+        <div class="calc-actions">
+          <button type="button" class="calc-btn" onclick="simpleInterestCalc()">Calculate</button>
+          <button type="button" class="calc-btn secondary" onclick="simpleInterestExample()">Load Example</button>
+        </div>
+        <div class="calc-result" id="siResult">Enter principal, rate and days.</div>
+      </div>
+
+      <div class="calc-widget">
+        <div class="calc-widget-title">🧮 Try It Yourself — Nominal ↔ Effective Rate</div>
+        <div class="calc-grid">
+          <div class="calc-field">
+            <label for="effDir">Direction</label>
+            <select id="effDir">
+              <option value="toEff" selected>Nominal → Effective</option>
+              <option value="toNom">Effective → Nominal</option>
+            </select>
+          </div>
+          <div class="calc-field"><label for="effRate">Rate (%)</label><input type="number" id="effRate" placeholder="e.g. 12" step="any"></div>
+          <div class="calc-field"><label for="effPeriods">Compounding periods / year</label><input type="number" id="effPeriods" placeholder="e.g. 12" step="any"></div>
+        </div>
+        <div class="calc-actions">
+          <button type="button" class="calc-btn" onclick="effRateCalc()">Convert</button>
+          <button type="button" class="calc-btn secondary" onclick="effRateExample()">Load Example</button>
+        </div>
+        <div class="calc-result" id="effResult">Enter a rate and compounding frequency.</div>
+      </div>
     </div>
 
     <!-- ══════════════ MORTGAGE ══════════════ -->
@@ -1175,9 +1633,9 @@
           <div class="example-title">📝 Amortize First Year of the $100,000 Mortgage</div>
           <table class="keystroke-table">
             <tr><th>Keystroke</th><th>Display</th><th>Meaning</th></tr>
-            <tr><td><span class="key">12</span> <span class="key gold">f</span> <span class="key">AMORT</span></td><td><span class="display">-8,484.08</span></td><td>Interest paid in first year</td></tr>
-            <tr><td><span class="key">x↔y</span></td><td><span class="display">-743.84</span></td><td>Principal paid in first year</td></tr>
-            <tr><td><span class="key">RCL</span> <span class="key">PV</span></td><td><span class="display">99,256.16</span></td><td>Remaining balance after year 1</td></tr>
+            <tr><td><span class="key">12</span> <span class="key gold">f</span> <span class="key">AMORT</span></td><td><span class="display">-8,471.00</span></td><td>Interest paid in first year</td></tr>
+            <tr><td><span class="key">x↔y</span></td><td><span class="display">-755.96</span></td><td>Principal paid in first year</td></tr>
+            <tr><td><span class="key">RCL</span> <span class="key">PV</span></td><td><span class="display">99,244.04</span></td><td>Remaining balance after year 1</td></tr>
           </table>
         </div>
       </div>
@@ -1193,7 +1651,33 @@
             <tr><td><span class="key">10.5</span> <span class="key blue">g</span> <span class="key">12÷</span></td><td><span class="display">0.88</span></td><td>Monthly rate</td></tr>
             <tr><td><span class="key">14000</span> <span class="key">PV</span></td><td><span class="display">14,000.00</span></td><td>Loan amount</td></tr>
             <tr><td><span class="key">4000</span> <span class="key">CHS</span> <span class="key">FV</span></td><td><span class="display">-4,000.00</span></td><td>Balloon payment</td></tr>
-            <tr><td><span class="key">PMT</span></td><td><span class="display">-395.65</span></td><td>💡 Monthly payment = $395.65</td></tr>
+            <tr><td><span class="key">PMT</span></td><td><span class="display">-360.02</span></td><td>💡 Monthly payment = $360.02</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="calc-widget">
+        <div class="calc-widget-title">🧮 Try It Yourself — Loan / Mortgage Calculator</div>
+        <div class="calc-widget-sub">Computes the payment and a year-by-year amortization schedule. Add a balloon amount for a loan that isn't fully paid off.</div>
+        <div class="calc-grid">
+          <div class="calc-field"><label for="mtgAmount">Loan amount ($)</label><input type="number" id="mtgAmount" placeholder="e.g. 100000" step="any"></div>
+          <div class="calc-field"><label for="mtgRate">Annual rate (%)</label><input type="number" id="mtgRate" placeholder="e.g. 8.5" step="any"></div>
+          <div class="calc-field"><label for="mtgTerm">Term</label><input type="number" id="mtgTerm" placeholder="e.g. 30" step="any"></div>
+          <div class="calc-field">
+            <label for="mtgTermUnit">Term unit</label>
+            <select id="mtgTermUnit"><option value="years" selected>Years</option><option value="months">Months</option></select>
+          </div>
+          <div class="calc-field"><label for="mtgBalloon">Balloon owed at end ($)</label><input type="number" id="mtgBalloon" placeholder="0" value="0" step="any"></div>
+        </div>
+        <div class="calc-actions">
+          <button type="button" class="calc-btn" onclick="mortgageCalc()">Calculate</button>
+          <button type="button" class="calc-btn secondary" onclick="mortgageExample()">Load Example</button>
+        </div>
+        <div class="calc-result" id="mtgResult">Enter loan amount, rate and term.</div>
+        <div class="calc-schedule-wrap" id="mtgScheduleWrap" style="display:none">
+          <table>
+            <thead><tr><th>Year</th><th>Interest Paid</th><th>Principal Paid</th><th>Ending Balance</th></tr></thead>
+            <tbody id="mtgScheduleBody"></tbody>
           </table>
         </div>
       </div>
@@ -1231,10 +1715,10 @@
           <tr><td><span class="key">2</span> <span class="key blue">g</span> <span class="key">Nj</span></td><td><span class="display">2.00</span></td><td>Year 3 = same as Year 2 (repeats 2×)</td></tr>
           <tr><td><span class="key">2000</span> <span class="key blue">g</span> <span class="key">CFj</span></td><td><span class="display">2,000.00</span></td><td>Year 4 cash flow</td></tr>
           <tr><td><span class="key">12</span> <span class="key">i</span></td><td><span class="display">12.00</span></td><td>12% discount rate</td></tr>
-          <tr><td><span class="key gold">f</span> <span class="key">NPV</span></td><td><span class="display">-627.61</span></td><td>💡 NPV = -$627.61 → not profitable at 12%</td></tr>
-          <tr><td><span class="key gold">f</span> <span class="key">IRR</span></td><td><span class="display">10.28</span></td><td>💡 IRR = 10.28% (below 12% threshold)</td></tr>
+          <tr><td><span class="key gold">f</span> <span class="key">NPV</span></td><td><span class="display">-907.35</span></td><td>💡 NPV = -$907.35 → not profitable at 12%</td></tr>
+          <tr><td><span class="key gold">f</span> <span class="key">IRR</span></td><td><span class="display">7.67</span></td><td>💡 IRR = 7.67% (below 12% threshold)</td></tr>
         </table>
-        <div class="tip"><strong>Interpretation:</strong> A negative NPV means the investment doesn't meet the 12% hurdle rate. The IRR of 10.28% confirms the return is below the 12% required.</div>
+        <div class="tip"><strong>Interpretation:</strong> A negative NPV means the investment doesn't meet the 12% hurdle rate. The IRR of 7.67% confirms the return is well below the 12% required.</div>
       </div>
 
       <h3>NPV vs IRR Interpretation</h3>
@@ -1256,6 +1740,42 @@
           </table>
         </div>
       </div>
+
+      <div class="calc-widget">
+        <div class="calc-widget-title">🧮 Try It Yourself — NPV / IRR Calculator</div>
+        <div class="calc-widget-sub">Enter the initial cash flow (CF₀) and each subsequent cash flow (CFⱼ). Use the periods field when a cash flow repeats for consecutive periods, just like Nⱼ on the calculator.</div>
+
+        <div class="calc-grid" style="grid-template-columns:1fr 1fr;">
+          <div class="calc-field"><label for="cfZero">CF₀ (initial, usually negative)</label><input type="number" id="cfZero" value="-10000" step="any"></div>
+          <div class="calc-field"><label for="cfRate">Discount rate i (%)</label><input type="number" id="cfRate" value="12" step="any"></div>
+        </div>
+
+        <div class="calc-row-list" id="cfRows">
+          <div class="calc-row">
+            <div class="calc-field"><label>CFⱼ</label><input type="number" class="cf-amount" value="2000" step="any" placeholder="e.g. 2000"></div>
+            <div class="calc-field"><label>× consecutive periods</label><input type="number" class="cf-count" value="1" min="1"></div>
+            <button type="button" class="calc-remove-btn" onclick="this.closest('.calc-row').remove()">Remove</button>
+          </div>
+          <div class="calc-row">
+            <div class="calc-field"><label>CFⱼ</label><input type="number" class="cf-amount" value="4000" step="any" placeholder="e.g. 4000"></div>
+            <div class="calc-field"><label>× consecutive periods</label><input type="number" class="cf-count" value="2" min="1"></div>
+            <button type="button" class="calc-remove-btn" onclick="this.closest('.calc-row').remove()">Remove</button>
+          </div>
+          <div class="calc-row">
+            <div class="calc-field"><label>CFⱼ</label><input type="number" class="cf-amount" value="2000" step="any" placeholder="e.g. 2000"></div>
+            <div class="calc-field"><label>× consecutive periods</label><input type="number" class="cf-count" value="1" min="1"></div>
+            <button type="button" class="calc-remove-btn" onclick="this.closest('.calc-row').remove()">Remove</button>
+          </div>
+        </div>
+
+        <div class="calc-actions">
+          <button type="button" class="calc-btn secondary" onclick="cfAddRow()">+ Add cash flow</button>
+          <button type="button" class="calc-btn" onclick="cfCalc()">Calculate NPV &amp; IRR</button>
+          <button type="button" class="calc-btn secondary" onclick="cfLoadExample()">Reset to Example</button>
+        </div>
+
+        <div class="calc-result" id="cfResult">Enter cash flows and a discount rate, then Calculate.</div>
+      </div>
     </div>
 
     <!-- ══════════════ DEPRECIATION ══════════════ -->
@@ -1271,13 +1791,13 @@
         <li>Enter the year number for which to calculate → <span class="key">i</span> (for SL/SOYD) or as multiplier (for DB)</li>
       </ol>
 
-      <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab(this,'dep-sl')">Straight-Line (SL)</button>
-        <button class="tab-btn" onclick="switchTab(this,'dep-db')">Declining Balance (DB)</button>
-        <button class="tab-btn" onclick="switchTab(this,'dep-soyd')">Sum-of-Years' Digits</button>
+      <div class="tabs" role="tablist">
+        <button class="tab-btn active" id="tabbtn-dep-sl" role="tab" aria-selected="true" aria-controls="dep-sl" onclick="switchTab(this,'dep-sl')">Straight-Line (SL)</button>
+        <button class="tab-btn" id="tabbtn-dep-db" role="tab" aria-selected="false" aria-controls="dep-db" tabindex="-1" onclick="switchTab(this,'dep-db')">Declining Balance (DB)</button>
+        <button class="tab-btn" id="tabbtn-dep-soyd" role="tab" aria-selected="false" aria-controls="dep-soyd" tabindex="-1" onclick="switchTab(this,'dep-soyd')">Sum-of-Years' Digits</button>
       </div>
 
-      <div class="tab-content active" id="dep-sl">
+      <div class="tab-content active" id="dep-sl" role="tabpanel" aria-labelledby="tabbtn-dep-sl">
         <h3>Straight-Line Depreciation</h3>
         <div class="formula">
           Annual Depreciation = (<strong>Cost − Salvage</strong>) ÷ <strong>Useful Life</strong>
@@ -1296,7 +1816,7 @@
         </div>
       </div>
 
-      <div class="tab-content" id="dep-db">
+      <div class="tab-content" id="dep-db" role="tabpanel" aria-labelledby="tabbtn-dep-db" hidden>
         <h3>Declining Balance Depreciation</h3>
         <div class="formula">
           Year Depreciation = Book Value × (Factor ÷ Useful Life)
@@ -1314,7 +1834,7 @@
         </div>
       </div>
 
-      <div class="tab-content" id="dep-soyd">
+      <div class="tab-content" id="dep-soyd" role="tabpanel" aria-labelledby="tabbtn-dep-soyd" hidden>
         <h3>Sum-of-Years' Digits (SOYD)</h3>
         <div class="formula">
           SOYD = Cost × (Remaining Life) ÷ Sum-of-Digits
@@ -1327,6 +1847,36 @@
             <tr><td><span class="key">10000</span> <span class="key">PV</span>, <span class="key">1000</span> <span class="key">FV</span>, <span class="key">5</span> <span class="key">n</span></td><td><span class="display">5.00</span></td><td>Set up asset values</td></tr>
             <tr><td><span class="key">2</span> <span class="key">i</span></td><td><span class="display">2.00</span></td><td>Year 2</td></tr>
             <tr><td><span class="key gold">f</span> <span class="key">SOYD</span></td><td><span class="display">2,400.00</span></td><td>💡 Year 2 depreciation = $2,400</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="calc-widget">
+        <div class="calc-widget-title">🧮 Try It Yourself — Depreciation Schedule</div>
+        <div class="calc-widget-sub">Works for any of the three methods and shows the full year-by-year schedule, not just one year.</div>
+        <div class="calc-grid">
+          <div class="calc-field">
+            <label for="depMethod">Method</label>
+            <select id="depMethod" onchange="depToggleFactor()">
+              <option value="sl" selected>Straight-Line</option>
+              <option value="db">Declining Balance</option>
+              <option value="soyd">Sum-of-Years' Digits</option>
+            </select>
+          </div>
+          <div class="calc-field"><label for="depCost">Cost ($)</label><input type="number" id="depCost" placeholder="e.g. 10000" step="any"></div>
+          <div class="calc-field"><label for="depSalvage">Salvage value ($)</label><input type="number" id="depSalvage" placeholder="e.g. 1000" step="any"></div>
+          <div class="calc-field"><label for="depLife">Useful life (years)</label><input type="number" id="depLife" placeholder="e.g. 5" step="any"></div>
+          <div class="calc-field" id="depFactorField" style="display:none"><label for="depFactor">DB factor (%)</label><input type="number" id="depFactor" placeholder="e.g. 200" value="200" step="any"></div>
+        </div>
+        <div class="calc-actions">
+          <button type="button" class="calc-btn" onclick="depCalc()">Calculate Schedule</button>
+          <button type="button" class="calc-btn secondary" onclick="depLoadExample()">Load Example</button>
+        </div>
+        <div class="calc-result" id="depResult">Choose a method and enter cost, salvage and life.</div>
+        <div class="calc-schedule-wrap" id="depScheduleWrap" style="display:none">
+          <table>
+            <thead><tr><th>Year</th><th>Depreciation</th><th>Accumulated</th><th>Book Value</th></tr></thead>
+            <tbody id="depScheduleBody"></tbody>
           </table>
         </div>
       </div>
@@ -1369,6 +1919,20 @@
           <tr><td><span class="key blue">g</span> <span class="key">x̄</span></td><td><span class="display">11.00</span></td><td>💡 Mean = 11</td></tr>
           <tr><td><span class="key blue">g</span> <span class="key">s</span></td><td><span class="display">5.39</span></td><td>💡 Sample std deviation ≈ 5.39</td></tr>
         </table>
+      </div>
+
+      <div class="calc-widget">
+        <div class="calc-widget-title">🧮 Try It Yourself — Statistics Calculator</div>
+        <div class="calc-widget-sub">Enter values separated by commas or new lines. Add a matching list of y-values to also get linear regression.</div>
+        <div class="calc-grid" style="grid-template-columns:1fr 1fr;">
+          <div class="calc-field"><label for="statX">x values</label><textarea id="statX" rows="3" placeholder="4, 8, 11, 14, 18"></textarea></div>
+          <div class="calc-field"><label for="statY">y values (optional, for regression)</label><textarea id="statY" rows="3" placeholder="optional"></textarea></div>
+        </div>
+        <div class="calc-actions">
+          <button type="button" class="calc-btn" onclick="statsCalc()">Calculate</button>
+          <button type="button" class="calc-btn secondary" onclick="statsLoadExample()">Load Example</button>
+        </div>
+        <div class="calc-result" id="statResult">Enter a list of x values.</div>
       </div>
     </div>
 
@@ -1423,7 +1987,7 @@
       </ol>
 
       <div class="section-nav" style="margin-top:24px">
-        <button class="section-nav-btn" onclick="showSection('prog_create',document.querySelector('[onclick*=prog_create]'))">✏️ Creating & Running Programs →</button>
+        <button class="section-nav-btn" onclick="showSection('prog_create')">✏️ Creating & Running Programs →</button>
       </div>
     </div>
 
@@ -1451,12 +2015,12 @@
         <div class="example-title">📝 Problem: Calculate net cost after 25% discount plus $5 handling</div>
         <p><strong>Formula:</strong> Net Cost = Price × (1 − 0.25) + 5</p>
 
-        <div class="tabs">
-          <button class="tab-btn active" onclick="switchTab(this,'pc-rpn')">RPN Mode</button>
-          <button class="tab-btn" onclick="switchTab(this,'pc-alg')">ALG Mode</button>
+        <div class="tabs" role="tablist">
+          <button class="tab-btn active" id="tabbtn-pc-rpn" role="tab" aria-selected="true" aria-controls="pc-rpn" onclick="switchTab(this,'pc-rpn')">RPN Mode</button>
+          <button class="tab-btn" id="tabbtn-pc-alg" role="tab" aria-selected="false" aria-controls="pc-alg" tabindex="-1" onclick="switchTab(this,'pc-alg')">ALG Mode</button>
         </div>
 
-        <div class="tab-content active" id="pc-rpn">
+        <div class="tab-content active" id="pc-rpn" role="tabpanel" aria-labelledby="tabbtn-pc-rpn">
           <p style="margin-top:12px;color:var(--text-dim);font-size:0.85rem">First test manually (price = $200 in RPN):</p>
           <table class="keystroke-table">
             <tr><th>Keystroke</th><th>Display</th><th>Action</th></tr>
@@ -1486,7 +2050,7 @@
           </table>
         </div>
 
-        <div class="tab-content" id="pc-alg">
+        <div class="tab-content" id="pc-alg" role="tabpanel" aria-labelledby="tabbtn-pc-alg" hidden>
           <p style="margin-top:12px;color:var(--text-dim);font-size:0.85rem">Store the program in ALG mode (skip the price entry):</p>
           <table class="keystroke-table">
             <tr><th>Keystroke</th><th>Display</th><th>Stored Instruction</th></tr>
@@ -1633,12 +2197,12 @@
       <h3>Adding Instructions Within a Program</h3>
       <p>Because there is no true "insert" function, there are two techniques:</p>
 
-      <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab(this,'edit-replace')">Method 1: Replacement</button>
-        <button class="tab-btn" onclick="switchTab(this,'edit-branch')">Method 2: Branching</button>
+      <div class="tabs" role="tablist">
+        <button class="tab-btn active" id="tabbtn-edit-replace" role="tab" aria-selected="true" aria-controls="edit-replace" onclick="switchTab(this,'edit-replace')">Method 1: Replacement</button>
+        <button class="tab-btn" id="tabbtn-edit-branch" role="tab" aria-selected="false" aria-controls="edit-branch" tabindex="-1" onclick="switchTab(this,'edit-branch')">Method 2: Branching</button>
       </div>
 
-      <div class="tab-content active" id="edit-replace">
+      <div class="tab-content active" id="edit-replace" role="tabpanel" aria-labelledby="tabbtn-edit-replace">
         <div class="card" style="margin-top:14px">
           <p><strong>Best for short insertions.</strong> Re-key the affected lines by overwriting them with the new content + the instructions you're displacing.</p>
           <ol class="steps">
@@ -1650,7 +2214,7 @@
         </div>
       </div>
 
-      <div class="tab-content" id="edit-branch">
+      <div class="tab-content" id="edit-branch" role="tabpanel" aria-labelledby="tabbtn-edit-branch" hidden>
         <div class="card" style="margin-top:14px">
           <p><strong>Best for larger insertions.</strong> Use GTO to detour the program to free space at the end of memory for the new instructions.</p>
           <ol class="steps">
@@ -1858,6 +2422,10 @@
 </div>
 
 <script>
+  const TOTAL_SECTIONS = document.querySelectorAll('nav .navlink').length;
+  const PROGRESS_KEY = 'hp12c_tutorial_progress_v1';
+
+  /* ── MOBILE DRAWER ── */
   function toggleNav() {
     const nav     = document.getElementById('sidebar');
     const btn     = document.getElementById('hamburgerBtn');
@@ -1868,29 +2436,64 @@
     document.body.style.overflow = isOpen ? 'hidden' : '';
   }
 
-  function showSection(id, linkEl) {
-    // Hide all sections
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    // Remove active from all nav links
-    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  /* ── SECTION NAVIGATION (hash-routed) ── */
+  function showSection(id) {
+    if (location.hash === '#' + id) {
+      renderSection(id);
+    } else {
+      location.hash = id; // triggers 'hashchange' -> renderSection
+    }
+  }
 
-    // Show selected
-    const target = document.getElementById(id);
-    if (target) target.classList.add('active');
-    if (linkEl) linkEl.classList.add('active');
+  function renderSection(id) {
+    const target = document.getElementById(id) || document.getElementById('home');
+
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    target.classList.add('active');
+
+    document.querySelectorAll('nav .navlink').forEach(a => {
+      a.classList.remove('active');
+      a.removeAttribute('aria-current');
+    });
+    const link = document.querySelector('nav .navlink[data-sec="' + target.id + '"]');
+    if (link) {
+      link.classList.add('active');
+      link.setAttribute('aria-current', 'page');
+    }
 
     // Close nav drawer on mobile after selecting
     const nav = document.getElementById('sidebar');
     if (nav.classList.contains('open')) toggleNav();
 
     // Scroll to top of main content
-    document.querySelector('main').scrollTo({ top: 0, behavior: 'smooth' });
+    const main = document.getElementById('mainContent');
+    main.scrollTo({ top: 0, behavior: 'smooth' });
+
+    markVisited(target.id);
+    announce(target);
   }
 
+  window.addEventListener('hashchange', () => {
+    const id = location.hash.slice(1) || 'home';
+    renderSection(id);
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const id = location.hash.slice(1) || 'home';
+    renderSection(id);
+    updateProgressUI();
+  });
+
+  /* ── ACCESSIBLE LIVE ANNOUNCEMENT ── */
+  function announce(sectionEl) {
+    const live = document.getElementById('srAnnounce');
+    if (!live) return;
+    const heading = sectionEl.querySelector('.section-title, h2');
+    live.textContent = 'Now viewing: ' + (heading ? heading.textContent.trim() : sectionEl.id);
+  }
+
+  /* ── TABS ── */
   function switchTab(btn, tabId) {
-    // Find the parent section and deactivate all tabs in it
-    const parent = btn.closest('.section') || btn.closest('main');
-    // Only deactivate tabs within the same tab group
     const tabGroup = btn.closest('.tabs');
     const tabContents = [];
     let el = tabGroup.nextElementSibling;
@@ -1899,12 +2502,747 @@
       el = el.nextElementSibling;
     }
 
-    tabGroup.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    tabContents.forEach(tc => tc.classList.remove('active'));
+    tabGroup.querySelectorAll('.tab-btn').forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-selected', 'false');
+      b.setAttribute('tabindex', '-1');
+    });
+    tabContents.forEach(tc => {
+      tc.classList.remove('active');
+      tc.setAttribute('hidden', '');
+    });
 
     btn.classList.add('active');
+    btn.setAttribute('aria-selected', 'true');
+    btn.removeAttribute('tabindex');
+
     const target = document.getElementById(tabId);
-    if (target) target.classList.add('active');
+    if (target) {
+      target.classList.add('active');
+      target.removeAttribute('hidden');
+    }
+  }
+
+  /* ── PROGRESS TRACKING (localStorage) ── */
+  function getVisited() {
+    try {
+      return new Set(JSON.parse(localStorage.getItem(PROGRESS_KEY) || '[]'));
+    } catch (e) {
+      return new Set();
+    }
+  }
+
+  function markVisited(id) {
+    let visited;
+    try {
+      visited = getVisited();
+      if (!visited.has(id)) {
+        visited.add(id);
+        localStorage.setItem(PROGRESS_KEY, JSON.stringify([...visited]));
+      }
+    } catch (e) {
+      visited = getVisited();
+    }
+    updateProgressUI(visited);
+  }
+
+  function updateProgressUI(setOverride) {
+    const visited = setOverride || getVisited();
+    document.querySelectorAll('nav .navlink').forEach(a => {
+      a.classList.toggle('visited', visited.has(a.dataset.sec));
+    });
+    const countEl = document.getElementById('progressCount');
+    const totalEl = document.getElementById('progressTotal');
+    const fillEl  = document.getElementById('progressFill');
+    if (countEl) countEl.textContent = visited.size;
+    if (totalEl) totalEl.textContent = TOTAL_SECTIONS;
+    if (fillEl) fillEl.style.width = (TOTAL_SECTIONS ? (visited.size / TOTAL_SECTIONS * 100) : 0) + '%';
+  }
+
+  function resetProgress() {
+    try { localStorage.removeItem(PROGRESS_KEY); } catch (e) { /* ignore */ }
+    updateProgressUI(new Set());
+  }
+
+  /* ── NAV SEARCH / FILTER ── */
+  function filterNav(query) {
+    const q = query.trim().toLowerCase();
+    document.querySelectorAll('nav .navlink').forEach(a => {
+      const match = !q || a.textContent.toLowerCase().includes(q);
+      a.classList.toggle('nav-hidden', !match);
+    });
+    document.querySelectorAll('.nav-section-label').forEach(label => {
+      let el = label.nextElementSibling;
+      let anyVisible = false;
+      while (el && el.classList.contains('navlink')) {
+        if (!el.classList.contains('nav-hidden')) anyVisible = true;
+        el = el.nextElementSibling;
+      }
+      label.classList.toggle('nav-hidden', !anyVisible);
+    });
+  }
+
+  function jumpToFirstMatch() {
+    const first = document.querySelector('nav .navlink:not(.nav-hidden)');
+    if (first) showSection(first.dataset.sec);
+  }
+
+  /* ── RPN STACK SIMULATOR ── */
+  const rpnState = {
+    stack: [0, 0, 0, 0], // X, Y, Z, T
+    buffer: '',
+    newEntry: true,
+    liftPending: false // true right after an operator/%: next digit should push X into Y first
+  };
+
+  function rpnFmt(n) {
+    if (!isFinite(n)) return 'Error';
+    return n.toFixed(2);
+  }
+
+  function rpnRender() {
+    const [x, y, z, t] = rpnState.stack;
+    document.getElementById('rpnT').textContent = rpnFmt(t);
+    document.getElementById('rpnZ').textContent = rpnFmt(z);
+    document.getElementById('rpnY').textContent = rpnFmt(y);
+    document.getElementById('rpnX').textContent = rpnState.newEntry || rpnState.buffer === ''
+      ? rpnFmt(x)
+      : rpnState.buffer;
+  }
+
+  function rpnLog(msg) {
+    const log = document.getElementById('rpnLog');
+    if (!log) return;
+    const empty = log.querySelector('.empty');
+    if (empty) empty.remove();
+    const line = document.createElement('div');
+    line.textContent = msg;
+    log.appendChild(line);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function rpnLogClear() {
+    const log = document.getElementById('rpnLog');
+    if (log) log.innerHTML = '<div class="empty">Keystrokes will appear here as you go.</div>';
+  }
+
+  function rpnDigit(d) {
+    if (rpnState.newEntry) {
+      if (rpnState.liftPending) {
+        const [x, y, z] = rpnState.stack;
+        rpnState.stack = [0, x, y, z]; // push current X up before starting the new number
+      }
+      rpnState.buffer = d;
+      rpnState.newEntry = false;
+      rpnState.liftPending = false;
+    } else {
+      rpnState.buffer += d;
+    }
+    rpnState.stack[0] = parseFloat(rpnState.buffer) || 0;
+    rpnLog(d);
+    rpnRender();
+  }
+
+  function rpnDecimal() {
+    if (rpnState.newEntry) {
+      if (rpnState.liftPending) {
+        const [x, y, z] = rpnState.stack;
+        rpnState.stack = [0, x, y, z];
+      }
+      rpnState.buffer = '0.';
+      rpnState.newEntry = false;
+      rpnState.liftPending = false;
+    } else if (rpnState.buffer.indexOf('.') === -1) {
+      rpnState.buffer += '.';
+    }
+    rpnState.stack[0] = parseFloat(rpnState.buffer) || 0;
+    rpnLog('.');
+    rpnRender();
+  }
+
+  function rpnEnter() {
+    const [x, y, z] = rpnState.stack;
+    rpnState.stack = [x, x, y, z];
+    rpnState.newEntry = true;
+    rpnState.liftPending = false; // ENTER already lifted — next digit overwrites X in place
+    rpnState.buffer = '';
+    rpnLog('ENTER  →  Y = ' + rpnFmt(x));
+    rpnRender();
+  }
+
+  function rpnOp(op) {
+    const [x, y, z, t] = rpnState.stack;
+    let result;
+    switch (op) {
+      case '+': result = y + x; break;
+      case '-': result = y - x; break;
+      case '*': result = y * x; break;
+      case '/': result = x === 0 ? NaN : y / x; break;
+      default: result = x;
+    }
+    rpnState.stack = [result, z, t, t];
+    rpnState.newEntry = true;
+    rpnState.liftPending = true; // next digit typed should push this result into Y
+    rpnState.buffer = '';
+    const sym = { '+': '+', '-': '−', '*': '×', '/': '÷' }[op] || op;
+    rpnLog(sym + '  →  X = ' + rpnFmt(result));
+    rpnRender();
+  }
+
+  function rpnPercent() {
+    const [x, y, z, t] = rpnState.stack;
+    const result = (y * x) / 100;
+    rpnState.stack = [result, y, z, t];
+    rpnState.newEntry = true;
+    rpnState.liftPending = true;
+    rpnState.buffer = '';
+    rpnLog('%  →  X = ' + rpnFmt(result) + ' (Y stays ' + rpnFmt(y) + ')');
+    rpnRender();
+  }
+
+  function rpnChs() {
+    rpnState.stack[0] = -rpnState.stack[0];
+    if (rpnState.buffer) {
+      rpnState.buffer = rpnState.buffer.startsWith('-')
+        ? rpnState.buffer.slice(1)
+        : '-' + rpnState.buffer;
+    }
+    rpnLog('CHS  →  X = ' + rpnFmt(rpnState.stack[0]));
+    rpnRender();
+  }
+
+  function rpnBackspace() {
+    if (!rpnState.newEntry && rpnState.buffer.length > 0) {
+      rpnState.buffer = rpnState.buffer.slice(0, -1);
+      rpnState.stack[0] = parseFloat(rpnState.buffer) || 0;
+      if (rpnState.buffer === '') rpnState.newEntry = true;
+    } else {
+      rpnState.stack[0] = 0;
+      rpnState.newEntry = true;
+      rpnState.buffer = '';
+    }
+    rpnRender();
+  }
+
+  function rpnClear() {
+    rpnState.stack[0] = 0;
+    rpnState.buffer = '';
+    rpnState.newEntry = true;
+    rpnState.liftPending = false;
+    rpnLog('CLx  →  X cleared');
+    rpnRender();
+  }
+
+  function rpnClearAll() {
+    rpnState.stack = [0, 0, 0, 0];
+    rpnState.buffer = '';
+    rpnState.newEntry = true;
+    rpnState.liftPending = false;
+    rpnRender();
+  }
+
+  const RPN_EXAMPLES = {
+    1: [
+      { fn: () => rpnDigit('3') }, { fn: rpnEnter },
+      { fn: () => rpnDigit('4') }, { fn: () => rpnOp('+') },
+      { fn: () => rpnDigit('2') }, { fn: () => rpnOp('*') }
+    ],
+    2: [
+      { fn: () => rpnDigit('4') }, { fn: () => rpnDigit('5') }, { fn: () => rpnDigit('0') }, { fn: rpnEnter },
+      { fn: () => rpnDigit('7') }, { fn: rpnPercent },
+      { fn: () => rpnOp('+') }
+    ]
+  };
+
+  function rpnRunExample(n) {
+    rpnClearAll();
+    rpnLogClear();
+    const steps = RPN_EXAMPLES[n] || [];
+    let i = 0;
+    (function next() {
+      if (i >= steps.length) return;
+      steps[i].fn();
+      i++;
+      setTimeout(next, 550);
+    })();
+  }
+
+  /* ── SHARED HELPERS ── */
+  function fmtMoney(x) {
+    if (!isFinite(x)) return 'Error';
+    const sign = x < 0 ? '-' : '';
+    return sign + '$' + Math.abs(x).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  /* ── TVM CORE MATH (shared by the TVM solver and the mortgage calculator) ── */
+  function tvmCalcFV(n, i, pv, pmt, S) {
+    if (i === 0) return -(pv + pmt * n);
+    const g = Math.pow(1 + i, n);
+    return -(pv * g + pmt * (1 + i * S) * (g - 1) / i);
+  }
+  function tvmCalcPV(n, i, pmt, fv, S) {
+    if (i === 0) return -(fv + pmt * n);
+    const g = Math.pow(1 + i, n);
+    return -(fv + pmt * (1 + i * S) * (g - 1) / i) / g;
+  }
+  function tvmCalcPMT(n, i, pv, fv, S) {
+    if (i === 0) return -(fv + pv) / n;
+    const g = Math.pow(1 + i, n);
+    return -(fv + pv * g) / ((1 + i * S) * (g - 1) / i);
+  }
+  function tvmCalcN(i, pv, pmt, fv, S) {
+    if (i === 0) {
+      if (pmt === 0) throw new Error('n is undefined when i=0 and PMT=0');
+      return -(fv + pv) / pmt;
+    }
+    const k = pmt * (1 + i * S) / i;
+    const num = k - fv;
+    const den = pv + k;
+    if (den === 0 || num / den <= 0) throw new Error('no real solution for n');
+    return Math.log(num / den) / Math.log(1 + i);
+  }
+  function tvmCalcI(n, pv, pmt, fv, S) {
+    function f(i) {
+      if (Math.abs(i) < 1e-12) return pv + pmt * n + fv;
+      const g = Math.pow(1 + i, n);
+      return pv * g + pmt * (1 + i * S) * (g - 1) / i + fv;
+    }
+    const lo = -0.99, hi = 5;
+    const steps = 2000;
+    let prevX = lo, prevF = f(lo);
+    let a = null, b = null;
+    for (let s = 1; s <= steps; s++) {
+      const x = lo + (hi - lo) * s / steps;
+      const fx = f(x);
+      if (isFinite(fx) && isFinite(prevF) && ((prevF < 0) !== (fx < 0))) { a = prevX; b = x; break; }
+      prevX = x; prevF = fx;
+    }
+    if (a === null) throw new Error('no rate found in a -99% to 500% per-period range');
+    let fa = f(a);
+    for (let iter = 0; iter < 200; iter++) {
+      const m = (a + b) / 2;
+      const fm = f(m);
+      if (Math.abs(fm) < 1e-9 || (b - a) < 1e-12) return m * 100;
+      if ((fa < 0) !== (fm < 0)) { b = m; } else { a = m; fa = fm; }
+    }
+    return ((a + b) / 2) * 100;
+  }
+
+  /* ── TVM SOLVER WIDGET ── */
+  function tvmToggleTarget() {
+    const target = document.getElementById('tvmSolveFor').value;
+    ['n', 'i', 'pv', 'pmt', 'fv'].forEach(k => {
+      document.getElementById('tvmField-' + k).classList.toggle('is-target', k === target);
+    });
+  }
+
+  function tvmSolve() {
+    const solveFor = document.getElementById('tvmSolveFor').value;
+    const mode = document.getElementById('tvmMode').value;
+    const S = mode === 'begin' ? 1 : 0;
+    const resultEl = document.getElementById('tvmResult');
+    const get = id => {
+      const v = document.getElementById(id).value;
+      return v === '' ? null : parseFloat(v);
+    };
+    const vals = { n: get('tvmN'), i: get('tvmI'), pv: get('tvmPV'), pmt: get('tvmPMT'), fv: get('tvmFV') };
+    const required = Object.keys(vals).filter(k => k !== solveFor);
+    for (const k of required) {
+      if (vals[k] === null || isNaN(vals[k])) {
+        resultEl.className = 'calc-result error';
+        resultEl.innerHTML = 'Please fill in all fields except the one you are solving for.';
+        return;
+      }
+    }
+
+    const i = (vals.i || 0) / 100;
+    let out;
+    try {
+      if (solveFor === 'pv') out = tvmCalcPV(vals.n, i, vals.pmt, vals.fv, S);
+      else if (solveFor === 'fv') out = tvmCalcFV(vals.n, i, vals.pv, vals.pmt, S);
+      else if (solveFor === 'pmt') out = tvmCalcPMT(vals.n, i, vals.pv, vals.fv, S);
+      else if (solveFor === 'n') out = tvmCalcN(i, vals.pv, vals.pmt, vals.fv, S);
+      else if (solveFor === 'i') out = tvmCalcI(vals.n, vals.pv, vals.pmt, vals.fv, S);
+    } catch (e) {
+      resultEl.className = 'calc-result error';
+      resultEl.innerHTML = 'No solution found for these inputs (' + e.message + ').';
+      return;
+    }
+
+    if (out === null || out === undefined || !isFinite(out)) {
+      resultEl.className = 'calc-result error';
+      resultEl.innerHTML = 'No solution found — double-check your sign convention (outflows negative, inflows positive).';
+      return;
+    }
+
+    const labels = { n: 'n (periods)', i: 'i (%/period)', pv: 'PV', pmt: 'PMT', fv: 'FV' };
+    const shown = solveFor === 'i' ? out.toFixed(4) + '%'
+      : solveFor === 'n' ? out.toFixed(4) + ' periods'
+      : fmtMoney(out);
+    resultEl.className = 'calc-result';
+    let hint = '';
+    if (solveFor === 'pv' || solveFor === 'pmt' || solveFor === 'fv') {
+      hint = '<div class="calc-field-hint">' + (out < 0 ? 'Negative = cash outflow (money paid out).' : 'Positive = cash inflow (money received).') + '</div>';
+    }
+    resultEl.innerHTML = labels[solveFor] + ' = <span class="big">' + shown + '</span>' + hint;
+  }
+
+  function tvmLoadExample() {
+    document.getElementById('tvmSolveFor').value = 'pv';
+    document.getElementById('tvmMode').value = 'begin';
+    tvmToggleTarget();
+    document.getElementById('tvmN').value = 48;
+    document.getElementById('tvmI').value = 0.5;
+    document.getElementById('tvmPMT').value = 500;
+    document.getElementById('tvmFV').value = 0;
+    document.getElementById('tvmPV').value = '';
+    tvmSolve();
+  }
+
+  function tvmClear() {
+    ['tvmN', 'tvmI', 'tvmPV', 'tvmPMT', 'tvmFV'].forEach(id => document.getElementById(id).value = '');
+    const el = document.getElementById('tvmResult');
+    el.className = 'calc-result';
+    el.innerHTML = 'Fill in four values and pick what to solve for.';
+  }
+
+  /* ── INTEREST WIDGETS ── */
+  function simpleInterestCalc() {
+    const p = parseFloat(document.getElementById('siPrincipal').value);
+    const r = parseFloat(document.getElementById('siRate').value);
+    const d = parseFloat(document.getElementById('siDays').value);
+    const el = document.getElementById('siResult');
+    if (!isFinite(p) || !isFinite(r) || !isFinite(d)) {
+      el.className = 'calc-result error';
+      el.innerHTML = 'Enter principal, rate and days.';
+      return;
+    }
+    const int360 = p * (r / 100) * d / 360;
+    const int365 = p * (r / 100) * d / 365;
+    el.className = 'calc-result';
+    el.innerHTML =
+      '<div class="line"><span>Interest (360-day basis)</span><span>' + fmtMoney(int360) + '</span></div>' +
+      '<div class="line"><span>Total (360-day basis)</span><span>' + fmtMoney(p + int360) + '</span></div>' +
+      '<div class="line"><span>Interest (365-day basis)</span><span>' + fmtMoney(int365) + '</span></div>' +
+      '<div class="line"><span>Total (365-day basis)</span><span>' + fmtMoney(p + int365) + '</span></div>';
+  }
+
+  function simpleInterestExample() {
+    document.getElementById('siPrincipal').value = 450;
+    document.getElementById('siRate').value = 7;
+    document.getElementById('siDays').value = 60;
+    simpleInterestCalc();
+  }
+
+  function effRateCalc() {
+    const dir = document.getElementById('effDir').value;
+    const r = parseFloat(document.getElementById('effRate').value);
+    const m = parseFloat(document.getElementById('effPeriods').value);
+    const el = document.getElementById('effResult');
+    if (!isFinite(r) || !isFinite(m) || m <= 0) {
+      el.className = 'calc-result error';
+      el.innerHTML = 'Enter a valid rate and compounding periods.';
+      return;
+    }
+    let out, label;
+    if (dir === 'toEff') {
+      out = (Math.pow(1 + (r / 100) / m, m) - 1) * 100;
+      label = 'Effective annual rate';
+    } else {
+      out = m * (Math.pow(1 + r / 100, 1 / m) - 1) * 100;
+      label = 'Nominal annual rate';
+    }
+    el.className = 'calc-result';
+    el.innerHTML = label + ' = <span class="big">' + out.toFixed(4) + '%</span>';
+  }
+
+  function effRateExample() {
+    document.getElementById('effDir').value = 'toEff';
+    document.getElementById('effRate').value = 12;
+    document.getElementById('effPeriods').value = 12;
+    effRateCalc();
+  }
+
+  /* ── MORTGAGE / LOAN WIDGET ── */
+  function mortgageCalc() {
+    const amount = parseFloat(document.getElementById('mtgAmount').value);
+    const rate = parseFloat(document.getElementById('mtgRate').value);
+    const term = parseFloat(document.getElementById('mtgTerm').value);
+    const unit = document.getElementById('mtgTermUnit').value;
+    const balloon = parseFloat(document.getElementById('mtgBalloon').value) || 0;
+    const el = document.getElementById('mtgResult');
+    const wrap = document.getElementById('mtgScheduleWrap');
+
+    if (!isFinite(amount) || !isFinite(rate) || !isFinite(term) || amount <= 0 || term <= 0) {
+      el.className = 'calc-result error';
+      el.innerHTML = 'Enter a valid loan amount, rate and term.';
+      wrap.style.display = 'none';
+      return;
+    }
+
+    const n = Math.round(unit === 'years' ? term * 12 : term);
+    const i = (rate / 100) / 12;
+    let pmt;
+    try {
+      pmt = tvmCalcPMT(n, i, amount, -balloon, 0);
+    } catch (e) {
+      el.className = 'calc-result error';
+      el.innerHTML = 'Could not compute a payment for these inputs.';
+      wrap.style.display = 'none';
+      return;
+    }
+
+    let balance = amount;
+    const rows = [];
+    let yearInterest = 0, yearPrincipal = 0, totalInterest = 0;
+    for (let m = 1; m <= n; m++) {
+      const interest = balance * i;
+      const principal = -pmt - interest;
+      balance -= principal;
+      yearInterest += interest;
+      yearPrincipal += principal;
+      totalInterest += interest;
+      if (m % 12 === 0 || m === n) {
+        rows.push({ year: Math.ceil(m / 12), interest: yearInterest, principal: yearPrincipal, balance });
+        yearInterest = 0; yearPrincipal = 0;
+      }
+    }
+
+    el.className = 'calc-result';
+    el.innerHTML = 'Payment = <span class="big">' + fmtMoney(Math.abs(pmt)) + ' / month</span>' +
+      '<div class="line"><span>Total of ' + n + ' payments</span><span>' + fmtMoney(Math.abs(pmt) * n) + '</span></div>' +
+      '<div class="line"><span>Total interest paid</span><span>' + fmtMoney(totalInterest) + '</span></div>';
+
+    document.getElementById('mtgScheduleBody').innerHTML = rows.map(r =>
+      '<tr><td>' + r.year + '</td><td>' + fmtMoney(r.interest) + '</td><td>' + fmtMoney(r.principal) + '</td><td>' + fmtMoney(Math.max(r.balance, 0)) + '</td></tr>'
+    ).join('');
+    wrap.style.display = 'block';
+  }
+
+  function mortgageExample() {
+    document.getElementById('mtgAmount').value = 100000;
+    document.getElementById('mtgRate').value = 8.5;
+    document.getElementById('mtgTerm').value = 30;
+    document.getElementById('mtgTermUnit').value = 'years';
+    document.getElementById('mtgBalloon').value = 0;
+    mortgageCalc();
+  }
+
+  /* ── NPV / IRR WIDGET ── */
+  function cfAddRow(amount, count) {
+    const wrap = document.createElement('div');
+    wrap.className = 'calc-row';
+    wrap.innerHTML =
+      '<div class="calc-field"><label>CFⱼ</label><input type="number" step="any" class="cf-amount" value="' + (amount === undefined ? '' : amount) + '" placeholder="e.g. 2000"></div>' +
+      '<div class="calc-field"><label>× consecutive periods</label><input type="number" step="any" class="cf-count" value="' + (count === undefined ? 1 : count) + '" min="1"></div>' +
+      '<button type="button" class="calc-remove-btn" onclick="this.closest(\'.calc-row\').remove()">Remove</button>';
+    document.getElementById('cfRows').appendChild(wrap);
+  }
+
+  function cfLoadExample() {
+    document.getElementById('cfZero').value = -10000;
+    document.getElementById('cfRate').value = 12;
+    document.getElementById('cfRows').innerHTML = '';
+    cfAddRow(2000, 1);
+    cfAddRow(4000, 2);
+    cfAddRow(2000, 1);
+    cfCalc();
+  }
+
+  function cfGetSeries() {
+    const cf0 = parseFloat(document.getElementById('cfZero').value);
+    const rows = [...document.querySelectorAll('#cfRows .calc-row')];
+    const series = [cf0];
+    for (const row of rows) {
+      const amt = parseFloat(row.querySelector('.cf-amount').value);
+      const cnt = Math.max(1, Math.round(parseFloat(row.querySelector('.cf-count').value) || 1));
+      for (let k = 0; k < cnt; k++) series.push(amt);
+    }
+    return series;
+  }
+
+  function npvOf(series, ratePct) {
+    const r = ratePct / 100;
+    return series.reduce((acc, cf, t) => acc + cf / Math.pow(1 + r, t), 0);
+  }
+
+  function irrOf(series) {
+    function f(ratePct) { return npvOf(series, ratePct); }
+    const lo = -99, hi = 1000, steps = 3000;
+    let prevX = lo, prevF = f(lo);
+    let a = null, b = null;
+    for (let s = 1; s <= steps; s++) {
+      const x = lo + (hi - lo) * s / steps;
+      const fx = f(x);
+      if (isFinite(fx) && isFinite(prevF) && ((prevF < 0) !== (fx < 0))) { a = prevX; b = x; break; }
+      prevX = x; prevF = fx;
+    }
+    if (a === null) throw new Error('no IRR found in range');
+    let fa = f(a);
+    for (let it = 0; it < 200; it++) {
+      const m = (a + b) / 2;
+      const fm = f(m);
+      if (Math.abs(fm) < 1e-7 || (b - a) < 1e-9) return m;
+      if ((fa < 0) !== (fm < 0)) { b = m; } else { a = m; fa = fm; }
+    }
+    return (a + b) / 2;
+  }
+
+  function cfCalc() {
+    const el = document.getElementById('cfResult');
+    const series = cfGetSeries();
+    if (series.some(v => !isFinite(v))) {
+      el.className = 'calc-result error';
+      el.innerHTML = 'Fill in every cash flow amount.';
+      return;
+    }
+    const ratePct = parseFloat(document.getElementById('cfRate').value);
+    if (!isFinite(ratePct)) {
+      el.className = 'calc-result error';
+      el.innerHTML = 'Enter a discount rate.';
+      return;
+    }
+    const npv = npvOf(series, ratePct);
+    let irrHtml;
+    try {
+      irrHtml = irrOf(series).toFixed(4) + '%';
+    } catch (e) {
+      irrHtml = 'no real solution in range';
+    }
+    el.className = 'calc-result';
+    el.innerHTML = 'NPV @ ' + ratePct + '% = <span class="big">' + fmtMoney(npv) + '</span>' +
+      '<div class="line"><span>IRR</span><span>' + irrHtml + '</span></div>' +
+      '<div class="calc-field-hint">' + (npv >= 0 ? '✅ NPV ≥ 0 — meets the ' + ratePct + '% hurdle rate.' : '❌ NPV &lt; 0 — below the ' + ratePct + '% hurdle rate.') + '</div>';
+  }
+
+  /* ── DEPRECIATION WIDGET ── */
+  function depToggleFactor() {
+    const m = document.getElementById('depMethod').value;
+    document.getElementById('depFactorField').style.display = m === 'db' ? '' : 'none';
+  }
+
+  function depCalc() {
+    const method = document.getElementById('depMethod').value;
+    const cost = parseFloat(document.getElementById('depCost').value);
+    const salvage = parseFloat(document.getElementById('depSalvage').value);
+    const life = Math.round(parseFloat(document.getElementById('depLife').value));
+    const factor = parseFloat(document.getElementById('depFactor').value) || 200;
+    const el = document.getElementById('depResult');
+    const wrap = document.getElementById('depScheduleWrap');
+
+    if (!isFinite(cost) || !isFinite(salvage) || !isFinite(life) || life <= 0 || cost <= salvage) {
+      el.className = 'calc-result error';
+      el.innerHTML = 'Enter a valid cost, salvage value (less than cost), and useful life.';
+      wrap.style.display = 'none';
+      return;
+    }
+
+    const rows = [];
+    let bookValue = cost, accumulated = 0;
+
+    if (method === 'sl') {
+      const annual = (cost - salvage) / life;
+      for (let y = 1; y <= life; y++) {
+        accumulated += annual;
+        bookValue = cost - accumulated;
+        rows.push({ year: y, dep: annual, accumulated, book: bookValue });
+      }
+    } else if (method === 'db') {
+      const rate = (factor / 100) / life;
+      for (let y = 1; y <= life; y++) {
+        let dep = bookValue * rate;
+        if (bookValue - dep < salvage) dep = bookValue - salvage;
+        dep = Math.max(dep, 0);
+        bookValue -= dep;
+        accumulated += dep;
+        rows.push({ year: y, dep, accumulated, book: bookValue });
+      }
+    } else if (method === 'soyd') {
+      const sumDigits = life * (life + 1) / 2;
+      for (let y = 1; y <= life; y++) {
+        const remaining = life - y + 1;
+        const dep = (cost - salvage) * remaining / sumDigits;
+        accumulated += dep;
+        bookValue = cost - accumulated;
+        rows.push({ year: y, dep, accumulated, book: bookValue });
+      }
+    }
+
+    const methodLabel = { sl: 'Straight-Line', db: 'Declining Balance', soyd: "Sum-of-Years' Digits" }[method];
+    el.className = 'calc-result';
+    el.innerHTML = methodLabel + ' — Year 1 depreciation = <span class="big">' + fmtMoney(rows[0].dep) + '</span>' +
+      '<div class="line"><span>Total depreciated over ' + life + ' years</span><span>' + fmtMoney(accumulated) + '</span></div>';
+
+    document.getElementById('depScheduleBody').innerHTML = rows.map(r =>
+      '<tr><td>' + r.year + '</td><td>' + fmtMoney(r.dep) + '</td><td>' + fmtMoney(r.accumulated) + '</td><td>' + fmtMoney(Math.max(r.book, salvage)) + '</td></tr>'
+    ).join('');
+    wrap.style.display = 'block';
+  }
+
+  function depLoadExample() {
+    document.getElementById('depMethod').value = 'sl';
+    depToggleFactor();
+    document.getElementById('depCost').value = 10000;
+    document.getElementById('depSalvage').value = 1000;
+    document.getElementById('depLife').value = 5;
+    document.getElementById('depFactor').value = 200;
+    depCalc();
+  }
+
+  /* ── STATISTICS WIDGET ── */
+  function parseNums(str) {
+    return str.split(/[,\s]+/).map(s => s.trim()).filter(s => s !== '').map(Number).filter(n => isFinite(n));
+  }
+
+  function statsCalc() {
+    const xs = parseNums(document.getElementById('statX').value);
+    const ys = parseNums(document.getElementById('statY').value);
+    const el = document.getElementById('statResult');
+    if (xs.length < 1) {
+      el.className = 'calc-result error';
+      el.innerHTML = 'Enter at least one x value.';
+      return;
+    }
+    const n = xs.length;
+    const sum = xs.reduce((a, b) => a + b, 0);
+    const mean = sum / n;
+    let html = '<div class="line"><span>Count (n)</span><span>' + n + '</span></div>' +
+      '<div class="line"><span>Mean (x̄)</span><span>' + mean.toFixed(4) + '</span></div>';
+
+    if (n > 1) {
+      const sqDiff = xs.reduce((a, x) => a + (x - mean) * (x - mean), 0);
+      const sampleStd = Math.sqrt(sqDiff / (n - 1));
+      const popStd = Math.sqrt(sqDiff / n);
+      html += '<div class="line"><span>Sample std dev (s)</span><span>' + sampleStd.toFixed(4) + '</span></div>' +
+        '<div class="line"><span>Population std dev (σ)</span><span>' + popStd.toFixed(4) + '</span></div>';
+    }
+
+    if (ys.length === xs.length && ys.length > 1) {
+      const my = ys.reduce((a, b) => a + b, 0) / n;
+      let sxy = 0, sxx = 0, syy = 0;
+      for (let k = 0; k < n; k++) {
+        sxy += (xs[k] - mean) * (ys[k] - my);
+        sxx += (xs[k] - mean) ** 2;
+        syy += (ys[k] - my) ** 2;
+      }
+      const slope = sxy / sxx;
+      const intercept = my - slope * mean;
+      const r = sxy / Math.sqrt(sxx * syy);
+      html += '<div class="line"><span>Regression slope (m)</span><span>' + slope.toFixed(4) + '</span></div>' +
+        '<div class="line"><span>Intercept (b)</span><span>' + intercept.toFixed(4) + '</span></div>' +
+        '<div class="line"><span>Correlation (r)</span><span>' + r.toFixed(4) + '</span></div>';
+    } else if (ys.length > 0 && ys.length !== xs.length) {
+      html += '<div class="calc-field-hint">y list must have the same count as x to compute regression.</div>';
+    }
+
+    el.className = 'calc-result';
+    el.innerHTML = html;
+  }
+
+  function statsLoadExample() {
+    document.getElementById('statX').value = '4, 8, 11, 14, 18';
+    document.getElementById('statY').value = '';
+    statsCalc();
   }
 </script>
 </body>
